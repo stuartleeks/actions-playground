@@ -19,3 +19,4 @@ jobs:
           echo Ref $ref
         env:
           NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
