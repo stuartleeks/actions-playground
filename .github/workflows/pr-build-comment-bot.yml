@@ -1,12 +1,21 @@
 on: issue_comment
 
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#issue_comment
+# https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#issue_comment
+
+
 jobs:
   pr_commented:
     name: PR comment
-    if: ${{ github.event.issue.pull_request }}
+    # https://docs.github.com/en/graphql/reference/enums#commentauthorassociation
+    # (and https://docs.github.com/en/rest/reference/issues#comments)
+    if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
     steps:
+      # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
       - run: |
           echo A comment on PR $NUMBER
+          ref=$(gh pr view 1 --json baseRefName | jq -r .baseRefName)
+          echo Ref $ref
         env:
           NUMBER: ${{ github.event.issue.number }}
