@@ -15,8 +15,9 @@ jobs:
       # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
       - run: |
           echo A comment on PR $NUMBER
-          ref=$(gh pr view 1 --json baseRefName | jq -r .baseRefName)
+          ref=$(gh pr view $ISSUE_URL --json headRefName | jq -r .headRefName)
           echo Ref $ref
         env:
           NUMBER: ${{ github.event.issue.number }}
+          ISSUE_URL: ${{ github.event.issue.issue_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
