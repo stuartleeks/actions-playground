@@ -33,10 +33,11 @@ jobs:
 
           echo "get headRef"
           ref=$(gh pr view $NUMBER --repo $REPO --json headRefName | jq -r .headRefName)
-          echo Ref $ref
+          echo "Ref: $ref"
           echo
 
           echo "run workflow"
+          echo "REPO: $REPO"
           gh workflow run fake-extended --repo $REPO --ref $ref
           echo
 
