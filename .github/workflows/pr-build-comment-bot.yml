@@ -14,9 +14,17 @@ jobs:
     steps:
       # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
       - run: |
+          set -e
           echo "A comment on PR $NUMBER for $REPO"
           echo "Comment:"
           echo "$COMMENT_BODY"
+
+          got_command=$(echo "$BODY" | grep -q /test; echo $?)
+          if [[ "$got_command" != "0" ]]; then
+            echo "command not found - ignoring"
+            exit 0
+          fi
+
           echo 
           echo "gh version"
           gh --version
@@ -25,8 +33,10 @@ jobs:
           ref=$(gh pr view $NUMBER --repo $REPO --json headRefName | jq -r .headRefName)
           echo Ref $ref
           echo
+          echo "run workflow"
           gh workflow run fake-extended --repo $REPO --ref $ref
           echo
+          echo "add comment"
           gh pr comment $NUMBER --repo $REPO --body "started extended workflow"
         env:
           NUMBER: ${{ github.event.issue.number }}
