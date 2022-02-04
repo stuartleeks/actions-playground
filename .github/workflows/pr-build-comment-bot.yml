@@ -21,8 +21,7 @@ jobs:
           echo "$COMMENT_BODY"
           echo 
 
-          got_command=$(echo "$BODY" | grep -q /test; echo $?)
-          echo $got_command
+          got_command=$(echo "$COMMENT_BODY" | grep -q /test; echo $?)
           if [[ "$got_command" != "0" ]]; then
             echo "command not found - ignoring"
             exit 0
