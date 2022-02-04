@@ -14,7 +14,7 @@ jobs:
     steps:
       # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
       - run: |
-          echo A comment on PR $NUMBER
+          echo A comment on PR $ISSUE_URL
           ref=$(gh pr view $ISSUE_URL --json headRefName | jq -r .headRefName)
           echo Ref $ref
         env:
