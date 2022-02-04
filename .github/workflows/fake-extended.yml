@@ -11,4 +11,6 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Fake extended tasks
-        run: echo Pretend that we're doing something more here :-)
+        run: 
+          echo "Pretend that we're doing something more here :-)"
+          cat "output.txt"
