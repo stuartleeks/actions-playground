@@ -38,7 +38,8 @@ jobs:
 
           echo "run workflow"
           echo "REPO: $REPO"
-          gh workflow run fake-extended --repo $REPO --ref $ref
+          # gh workflow run fake-extended --repo $REPO --ref $ref
+          gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended.yml/dispatches -F ref=$ref
           echo
 
           echo "add comment"
