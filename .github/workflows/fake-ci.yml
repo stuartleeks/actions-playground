@@ -19,3 +19,5 @@ jobs:
         run: |
           echo Hello there!
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+        env:
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
