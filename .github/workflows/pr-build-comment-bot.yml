@@ -31,8 +31,9 @@ jobs:
           gh --version
           echo
 
-          echo "get headRef"
-          ref=$(gh pr view $NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
+          echo "get ref"
+          # ref=$(gh pr view $NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
+          ref=$(gh pr view $NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
           echo "Ref: $ref"
           echo
 
