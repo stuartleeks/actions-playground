@@ -32,7 +32,7 @@ jobs:
           echo
 
           echo "get headRef"
-          ref=$(gh pr view $NUMBER --repo $REPO --json headRefName | jq -r .headRefName)
+          ref=$(gh pr view $NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
           echo "Ref: $ref"
           echo
 
