@@ -31,10 +31,16 @@ jobs:
           gh --version
           echo
 
+          echo "env:"
+          printenv | sort
+          echo
+
           echo "get ref"
-          # ref=$(gh pr view $NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
+          ref=$(gh pr view $NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
+          echo "potentialMergeCommit ref: $ref"
           ref=$(gh pr view $NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
-          echo "Ref: $ref"
+          echo "last commit ref: $ref"
+          echo "Using ref: $ref"
           echo
 
           echo "run workflow"
@@ -51,3 +57,4 @@ jobs:
           REPO: ${{ github.event.repository.full_name }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
