@@ -40,6 +40,9 @@ jobs:
           echo "potentialMergeCommit ref: $ref"
           ref=$(gh pr view $NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
           echo "last commit ref: $ref"
+          ref=$GITHUB_SHA
+          echo "GITHUB_SHA: $ref"
+          echo
           echo "Using ref: $ref"
           echo
 
