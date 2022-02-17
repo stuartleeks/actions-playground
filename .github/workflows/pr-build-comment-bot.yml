@@ -59,10 +59,15 @@ jobs:
 
           echo "run workflow"
           echo "REPO: $REPO"
-          # gh workflow run fake-extended --repo $REPO --ref $ref
-          # gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches -F ref=$ref
-          # gh workflow run fake-extended-2 --field ref=$ref --field remote=$pr_owner/$pr_repo # get could not determine base repo: fatal: not a git repository (or any of the parent directories): .git
-          echo "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}" | gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches --input -
+          echo "PR Repo: $pr_owner/$pr_repo"
+          echo "PR Ref: $ref"
+
+          # The following fails with: git could not determine base repo: fatal: not a git repository (or any of the parent directories): .git
+          # gh workflow run fake-extended-2 --field ref=$ref --field remote=$pr_owner/$pr_repo 
+          # The following silently does nothing!
+          #echo "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}" | gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches --input -
+          curl -i -u $GITHUB_TOKEN:x-oauth-basic -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches -d "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}"
+          
           echo
 
           echo "add comment"
