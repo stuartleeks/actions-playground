@@ -1,0 +1,22 @@
+name: fake-extended-2
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: The git ref to checkout
+        required: true
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fake extended tasks
+        run:
+          git checkout ${{ github.event.inputs.ref }}
+          echo "Pretend that we're doing something more here :-)"
+          cat "output.txt"
