@@ -62,7 +62,7 @@ jobs:
           # gh workflow run fake-extended --repo $REPO --ref $ref
           # gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches -F ref=$ref
           # gh workflow run fake-extended-2 --field ref=$ref --field remote=$pr_owner/$pr_repo # get could not determine base repo: fatal: not a git repository (or any of the parent directories): .git
-          gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches -F ref=main -f prRef=$ref -f remote=$pr_owner/$pr_repo
+          echo "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}" | gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches --input -
           echo
 
           echo "add comment"
