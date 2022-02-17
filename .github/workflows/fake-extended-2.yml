@@ -21,7 +21,7 @@ jobs:
       - name: Fake extended tasks
         run: |
           set -e
-          git config config variable advice.detachedHead false
+          git config advice.detachedHead false
           git remote add fork https://github.com/${{  github.event.inputs.remote }}
           git remote update
           git checkout ${{ github.event.inputs.ref }}
