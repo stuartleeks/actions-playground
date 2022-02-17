@@ -6,7 +6,7 @@ on:
       remote:
         description: Name of the repo GitHub repo containing the ref (as org/repo )
         required: true
-      ref:
+      prRef:
         description: The git ref to checkout
         required: true
 
@@ -24,7 +24,7 @@ jobs:
           git config advice.detachedHead false
           git remote add fork https://github.com/${{  github.event.inputs.remote }}
           git remote update
-          git checkout ${{ github.event.inputs.ref }}
+          git checkout ${{ github.event.inputs.prRef }}
           echo
           echo "Pretend that we're doing something more here :-)"
           cat "output.txt"
