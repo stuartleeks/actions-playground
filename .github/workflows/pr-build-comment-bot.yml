@@ -31,6 +31,11 @@ jobs:
             exit 0
           fi
 
+          echo
+          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
+          echo 
+
+
           echo "gh version"
           gh --version
           echo
@@ -79,3 +84,4 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
