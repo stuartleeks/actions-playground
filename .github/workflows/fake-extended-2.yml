@@ -24,5 +24,11 @@ jobs:
           git remote add fork https://github.com/${{  github.event.inputs.remote }}
           git remote update
           git checkout ${{ github.event.inputs.ref }}
+          echo
           echo "Pretend that we're doing something more here :-)"
           cat "output.txt"
+          echo
+          echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+          echo 
+        env:
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
