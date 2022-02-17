@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Fake extended tasks
-        run:
+        run: |
           set -e
           git remote add fork https://github.com/${{  github.event.inputs.remote }}
           git remote update
