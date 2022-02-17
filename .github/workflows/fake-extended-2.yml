@@ -3,6 +3,9 @@ name: fake-extended-2
 on:
   workflow_dispatch:
     inputs:
+      remote:
+        description: Name of the repo GitHub repo containing the ref (as org/repo )
+        required: true
       ref:
         description: The git ref to checkout
         required: true
@@ -17,7 +20,9 @@ jobs:
 
       - name: Fake extended tasks
         run:
-          git fetch
+          set -e
+          git remote add fork https://github.com/${{  github.event.inputs.remote }}
+          git remote update
           git checkout ${{ github.event.inputs.ref }}
           echo "Pretend that we're doing something more here :-)"
           cat "output.txt"
