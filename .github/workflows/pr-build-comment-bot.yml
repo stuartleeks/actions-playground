@@ -15,6 +15,11 @@ jobs:
     # (and https://docs.github.com/en/rest/reference/issues#comments)
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
+    outputs:
+      runDeploy: ${{ steps.check_command.outputs.runDeploy }}
+      prRepo: ${{ steps.check_command.outputs.prRepo }}
+      prRef: ${{ steps.check_command.outputs.prRef }}
+
     steps:
       # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
       - name: check_command
@@ -28,6 +33,7 @@ jobs:
           got_command=$(echo "$COMMENT_BODY" | grep -q /test; echo $?)
           if [[ "$got_command" != "0" ]]; then
             echo "command not found - ignoring"
+            echo "::set-output name=runDeploy::false"
             exit 0
           fi
 
@@ -67,16 +73,21 @@ jobs:
           echo "PR Repo: $pr_owner/$pr_repo"
           echo "PR Ref: $ref"
 
-          # The following fails with: git could not determine base repo: fatal: not a git repository (or any of the parent directories): .git
-          # gh workflow run fake-extended-2 --field ref=$ref --field remote=$pr_owner/$pr_repo 
-          # The following silently does nothing!
-          #echo "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}" | gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches --input -
-          curl -i -u $GITHUB_TOKEN:x-oauth-basic -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches -d "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}"
-          
-          echo
+          # # The following fails with: git could not determine base repo: fatal: not a git repository (or any of the parent directories): .git
+          # # gh workflow run fake-extended-2 --field ref=$ref --field remote=$pr_owner/$pr_repo 
+          # # The following silently does nothing!
+          # #echo "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}" | gh api -X POST repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches --input -
+          # curl -i -u $GITHUB_TOKEN:x-oauth-basic -X POST -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/stuartleeks/actions-playground/actions/workflows/fake-extended-2.yml/dispatches -d "{\"ref\":\"main\", \"inputs\": {\"prRef\":\"$ref\",\"remote\":\"$pr_owner/$pr_repo\"}}"
+          # 
+          # echo
 
-          echo "add comment"
-          gh pr comment $NUMBER --repo $REPO --body "started extended workflow"
+          # echo "add comment"
+          # gh pr comment $NUMBER --repo $REPO --body "started extended workflow"
+
+
+          echo "::set-output name=prRef::${ref}"
+          echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
+          echo "::set-output name=runDeploy::true"
         env:
           NUMBER: ${{ github.event.issue.number }}
           ISSUE_URL: ${{ github.event.issue.url }}
@@ -85,3 +96,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+
+  run_deploy:
+    needs: [pr_commented]
+    if: ${{ needs.pr_commented.outputs.runDeploy }} == "true"
+    name: Run deploy
+    uses: ./.github/workflows/fake-extended-3.yml
+    with:
+      prRef: ${{ needs.pr_commented.outputs.prRef }}
+      prRepo: ${{ needs.pr_commented.outputs.prRepo }}
