@@ -17,6 +17,7 @@ jobs:
 
       - name: Fake extended tasks
         run:
+          git fetch
           git checkout ${{ github.event.inputs.ref }}
           echo "Pretend that we're doing something more here :-)"
           cat "output.txt"
