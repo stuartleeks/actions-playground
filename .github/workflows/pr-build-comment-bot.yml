@@ -49,8 +49,8 @@ jobs:
           echo -e "\tPR from $pr_owner/$pr_repo"
 
           echo "Getting PR ref..."
-          ref=$(gh pr view $NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
-          echo -e "\tLateset commit ref: $ref"
+          ref=$(gh pr view $NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
+          echo -e "\tLatest commit ref: $ref"
           echo
 
           echo "Setting outputs"
