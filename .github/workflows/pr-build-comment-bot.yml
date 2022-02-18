@@ -131,10 +131,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{needs.job1.outputs.output1}} ${{needs.job1.outputs.output2}}
+      - run: |
+          echo ${{needs.job1.outputs.output1}} $MESSAGE
+        env:
+          MESSAGE: ${{needs.job1.outputs.output2}}
 
       - name: test
         run: |
           echo
+          echo "needs.pr_commented.outputs.prRef : ${{ needs.pr_commented.outputs.prRef  }}"
           echo "inputs.prRepo: ${{ inputs.prRepo }}"
           echo "PR_REPO: ${PR_REPO}"
           echo
