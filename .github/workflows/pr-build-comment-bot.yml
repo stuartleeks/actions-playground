@@ -119,3 +119,5 @@ jobs:
     with:
       prRef: ${{ needs.pr_commented.outputs.prRef }}
       prRepo: ${{ needs.pr_commented.outputs.prRepo }}
+    secrets:
+      SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
