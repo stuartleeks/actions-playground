@@ -26,20 +26,25 @@ jobs:
         run: |
           set -e
           echo
-          echo "inputs.prRepo: ${{ inputs.prRepo }}"
           echo "PR_REPO: ${PR_REPO}"
+          echo "PR_REF: ${PR_RE}"
           echo
 
-          echo
           echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
-          echo 
+          echo
 
+          #
+          # NOTE: Here we are using the latest PR commit, i.e. we're not merging with main
+          #       We could merge main (and even test if the PR is mergable before kicking off the run)
+          #
+
+          echo "Load PR code..."
           git config advice.detachedHead false
           git remote add fork https://github.com/${{ inputs.prRepo }}
           git remote update
           git checkout ${{ inputs.prRef }}
           echo
-          echo "Pretend that we're doing something more here :-)"
+          echo "Pretend that we're doing something more here - show output.txt for PR context :-)"
           cat "output.txt"
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
