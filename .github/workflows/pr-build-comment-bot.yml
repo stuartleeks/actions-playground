@@ -38,9 +38,14 @@ jobs:
     # (and https://docs.github.com/en/rest/reference/issues#comments)
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
+    outputs:
+      runDeploy: ${{ steps.check_command.outputs.runDeploy }}
+      prRepo: ${{ steps.check_command.outputs.prRepo }}
+      prRef: ${{ steps.check_command.outputs.prRef }}
     steps:
       # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
-      - name: check_command
+      - id: check_command
+        name: Check for a command
         run: |
           set -e
           echo "A comment on PR $NUMBER for $REPO"
@@ -121,10 +126,7 @@ jobs:
           echo "PR_REPO: ${PR_REPO}"
         env: 
           PR_REPO: ${{ steps.check_command.outputs.prRepo }}
-    outputs:
-      runDeploy: ${{ steps.check_command.outputs.runDeploy }}
-      prRepo: ${{ steps.check_command.outputs.prRepo }}
-      prRef: ${{ steps.check_command.outputs.prRef }}
+
 
   test:
     needs: [ pr_commented, job1] 
