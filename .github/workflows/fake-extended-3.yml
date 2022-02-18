@@ -23,9 +23,13 @@ jobs:
         run: |
           set -e
           echo
-          echo "inputs.prRepo: ${{ inputs.prRepo }}
+          echo "inputs.prRepo: ${{ inputs.prRepo }}"
           echo "PR_REPO: ${PR_REPO}"
           echo
+
+          echo
+          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
+          echo 
 
           git config advice.detachedHead false
           git remote add fork https://github.com/${{ inputs.prRepo }}
@@ -34,9 +38,6 @@ jobs:
           echo
           echo "Pretend that we're doing something more here :-)"
           cat "output.txt"
-          echo
-          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
-          echo 
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           PR_REPO: ${{ inputs.prRepo}}
