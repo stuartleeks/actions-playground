@@ -22,6 +22,11 @@ jobs:
       - name: Fake extended tasks
         run: |
           set -e
+          echo
+          echo "inputs.prRepo: ${{ inputs.prRepo }}
+          echo "PR_REPO: ${PR_REPO}"
+          echo
+
           git config advice.detachedHead false
           git remote add fork https://github.com/${{ inputs.prRepo }}
           git remote update
@@ -34,3 +39,4 @@ jobs:
           echo 
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+          PR_REPO: ${{ inputs.prRepo}}
