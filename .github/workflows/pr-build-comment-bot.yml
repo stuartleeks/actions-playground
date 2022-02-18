@@ -15,11 +15,6 @@ jobs:
     # (and https://docs.github.com/en/rest/reference/issues#comments)
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
-    outputs:
-      runDeploy: ${{ steps.check_command.outputs.runDeploy }}
-      prRepo: ${{ steps.check_command.outputs.prRepo }}
-      prRef: ${{ steps.check_command.outputs.prRef }}
-
     steps:
       # TODO https://docs.github.com/en/actions/advanced-guides/using-github-cli-in-workflows
       - name: check_command
@@ -84,10 +79,11 @@ jobs:
           # echo "add comment"
           # gh pr comment $NUMBER --repo $REPO --body "started extended workflow"
 
-
+          echo "Setting outputs"
           echo "::set-output name=prRef::${ref}"
           echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
           echo "::set-output name=runDeploy::true"
+          echo "Done"
         env:
           NUMBER: ${{ github.event.issue.number }}
           ISSUE_URL: ${{ github.event.issue.url }}
@@ -97,8 +93,18 @@ jobs:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
 
+      - name: test1
+        run: | 
+          echo "PR_REPO: ${PR_REPO}"
+        env: 
+          PR_REPO: ${{ steps.check_command.outputs.prRepo }}
+    outputs:
+      runDeploy: ${{ steps.check_command.outputs.runDeploy }}
+      prRepo: ${{ steps.check_command.outputs.prRepo }}
+      prRef: ${{ steps.check_command.outputs.prRef }}
+
   test:
-    needs: [pr_commented]
+    needs: pr_commented
     runs-on: ubuntu-latest
     steps:
       - name: test
@@ -112,7 +118,7 @@ jobs:
           PR_REPO: ${{ needs.pr_commented.outputs.prRepo }}
 
   run_deploy:
-    needs: [pr_commented, test]
+    needs: pr_commented
     if: ${{ needs.pr_commented.outputs.runDeploy }} == "true"
     name: Run deploy
     uses: ./.github/workflows/fake-extended-3.yml

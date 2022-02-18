@@ -43,4 +43,5 @@ jobs:
           cat "output.txt"
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
-          PR_REPO: ${{ inputs.prRepo}}
+          PR_REPO: ${{ inputs.prRepo }}
+          PR_REF: ${{ inputs.prRef }}
