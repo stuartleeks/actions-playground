@@ -52,7 +52,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Showing help on PR ${PR_NUMBER}"
-          gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello!\n\nYou can use the following commands:\n/test - run tests on a PR\n/help - show this help"
+          gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello<br/><br/>You can use the following commands:<br/>    /test - run tests on a PR<br/>    /help - show this help"
 
       - id: check_command
         name: Check for a command
@@ -80,7 +80,7 @@ jobs:
           echo -e "\tPR from $pr_owner/$pr_repo"
 
           echo "Getting PR ref..."
-          ref=$(gh pr view $NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
+          ref=$(gh pr view $NUMBER --repo "$REPO" --json commits | jq -r ".[] | last | .oid")
           echo -e "\tLatest commit ref: $ref"
           echo
 
@@ -95,28 +95,43 @@ jobs:
           REPO: ${{ github.event.repository.full_name }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
 
-  output_test:
+  get_pr_details:
+    name: Get PR Details
     runs-on: ubuntu-latest
+    if: ${{ needs.pr_commented.outputs.command }} == "run-tests"
     needs: pr_commented
     steps:
-      - name: test GH script output
+      - name: Get PR commit details
         env:
-          COMMENT_ACTION: ${{ needs.pr_commented.outputs.command.action }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_URL: ${{ github.event.issue.url }}
+          REPO: ${{ github.event.repository.full_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "COMMENT_ACTION: ${COMMENT_ACTION}"
-        
+          echo "Getting PR repo..."
+          pr_owner=$(gh pr view $PR_NUMBER --repo $REPO --json headRepositoryOwner | jq -r .headRepositoryOwner.login)
+          pr_repo=$(gh pr view $PR_NUMBER --repo $REPO --json headRepository | jq -r .headRepository.name)
+          echo -e "\tPR from $pr_owner/$pr_repo"
 
+          echo "Getting PR ref..."
+          ref=$(gh pr view $PR_NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
+          echo -e "\tLatest commit ref: $ref"
+          echo
+
+          echo "Setting outputs"
+          echo "::set-output name=prRef::${ref}"
+          echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
+          echo "Done"
 
   run_test:
-    needs: pr_commented
-    if: ${{ needs.pr_commented.outputs.runDeploy }} == "true"
+    needs: [get_pr_details, pr_commented]
+    if: ${{ needs.pr_commented.outputs.command }} == "run-tests"
     name: Run deploy
     uses: ./.github/workflows/fake-extended-3.yml
     with:
-      prRef: ${{ needs.pr_commented.outputs.prRef }}
-      prRepo: ${{ needs.pr_commented.outputs.prRepo }}
+      prRef: ${{ needs.get_pr_details.outputs.prRef }}
+      prRepo: ${{ needs.get_pr_details.outputs.prRepo }}
     secrets:
       SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
