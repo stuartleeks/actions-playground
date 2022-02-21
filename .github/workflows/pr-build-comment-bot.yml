@@ -19,10 +19,9 @@ jobs:
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
     outputs:
-      runDeploy: ${{ steps.check_command.outputs.runDeploy }}
-      prRepo: ${{ steps.check_command.outputs.prRepo }}
-      prRef: ${{ steps.check_command.outputs.prRef }}
       command: ${{ steps.check_command_script.outputs.result }}
+      prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
+      prRef: ${{ steps.get_pr_details.outputs.prRef }}
     steps:
       - id: check_command_script
         name: Check for a command using GitHub script
@@ -54,59 +53,11 @@ jobs:
           echo "Showing help on PR ${PR_NUMBER}"
           gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello<br/><br/>You can use the following commands:<br/>    /test - run tests on a PR<br/>    /help - show this help"
 
-      - id: check_command
-        name: Check for a command
-        run: |
-          set -e
-          echo "A comment on PR $NUMBER for $REPO"
-          echo "Comment:"
-          echo "$COMMENT_BODY"
-          echo 
-
-          got_command=$(echo "$COMMENT_BODY" | grep -q /test; echo $?)
-          if [[ "$got_command" != "0" ]]; then
-            echo "command not found - ignoring"
-            echo "::set-output name=runDeploy::false"
-            exit 0
-          fi
-
-          echo
-          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
-          echo 
-
-          echo "Getting PR repo..."
-          pr_owner=$(gh pr view $NUMBER --repo $REPO --json headRepositoryOwner | jq -r .headRepositoryOwner.login)
-          pr_repo=$(gh pr view $NUMBER --repo $REPO --json headRepository | jq -r .headRepository.name)
-          echo -e "\tPR from $pr_owner/$pr_repo"
-
-          echo "Getting PR ref..."
-          ref=$(gh pr view $NUMBER --repo "$REPO" --json commits | jq -r ".[] | last | .oid")
-          echo -e "\tLatest commit ref: $ref"
-          echo
-
-          echo "Setting outputs"
-          echo "::set-output name=prRef::${ref}"
-          echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
-          echo "::set-output name=runDeploy::true"
-          echo "Done"
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-          ISSUE_URL: ${{ github.event.issue.url }}
-          REPO: ${{ github.event.repository.full_name }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
-
-  get_pr_details:
-    name: Get PR Details
-    runs-on: ubuntu-latest
-    if: ${{ needs.pr_commented.outputs.command }} == "run-tests"
-    needs: pr_commented
-    steps:
-      - name: Get PR commit details
+      - id: get_pr_details
+        name: Get PR details
+        if: ${{ steps.check_command_script.outputs.result == 'run-tests' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_URL: ${{ github.event.issue.url }}
           REPO: ${{ github.event.repository.full_name }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -126,12 +77,12 @@ jobs:
           echo "Done"
 
   run_test:
-    needs: [get_pr_details, pr_commented]
+    needs: [pr_commented]
     if: ${{ needs.pr_commented.outputs.command }} == "run-tests"
     name: Run deploy
     uses: ./.github/workflows/fake-extended-3.yml
     with:
-      prRef: ${{ needs.get_pr_details.outputs.prRef }}
-      prRepo: ${{ needs.get_pr_details.outputs.prRepo }}
+      prRef: ${{ needs.pr_commented.outputs.prRef }}
+      prRepo: ${{ needs.pr_commented.outputs.prRepo }}
     secrets:
       SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
