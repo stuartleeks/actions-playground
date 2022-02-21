@@ -30,30 +30,29 @@ jobs:
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
         with:
+          result-encoding: string
           script: |
-            console.log("Hello from GH script");
             const commentBody = context.payload.comment.body;
 
-            switch (commentBody.trim() != "/test"){
+            switch (commentBody.trim()){
               case "/test":
-                console.log("in /test")
-                return {
-                  action: "test"
-                };
+                return "run-tests";
+              case "/help":
+                return "show-help";
               default:
                 console.log("in default")
-                return {
-                  action: "none"
-                };
+                return "none";
             }
-      
-      - name: debug
+
+      - name: Show Help
+        if: ${{ steps.check_command_script.outputs.result == 'show-help' }}
         env:
-          COMMENT_ACTION: ${{ steps.check_command_script.outputs.result.action }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.event.repository.full_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "COMMENT_ACTION: ${COMMENT_ACTION}"
-          echo "output.Action: ${{ steps.check_command_script.outputs.result.action }}
-          echo "output: ${{ steps.check_command_script.outputs.result }}
+          echo "Showing help on PR ${PR_NUMBER}"
+          gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello!\n\nYou can use the following commands:\n/test - run tests on a PR\n/help - show this help"
 
       - id: check_command
         name: Check for a command
