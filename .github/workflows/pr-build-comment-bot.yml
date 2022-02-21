@@ -22,7 +22,29 @@ jobs:
       runDeploy: ${{ steps.check_command.outputs.runDeploy }}
       prRepo: ${{ steps.check_command.outputs.prRepo }}
       prRef: ${{ steps.check_command.outputs.prRef }}
+      command: ${{ steps.check_command_script.outputs.result }}
     steps:
+      - id: check_command_script
+        name: Check for a command using GitHub script
+        uses: actions/github-script@v6
+        env:
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+        with:
+          script: |
+            console.log("Hello from GH script");
+            const commentBody = context.payload.comment.body;
+
+            switch (commentBody.trim() != "/test"){
+              case "/test":
+                return {
+                  action: "test"
+                };
+              default:
+                return {
+                  action: "none"
+                };
+            }
+
       - id: check_command
         name: Check for a command
         run: |
@@ -66,6 +88,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+
+  output_test:
+    runs-on: ubuntu-latest
+    needs: pr_commented
+    steps:
+      - name: test GH script output
+        env:
+          COMMENT_ACTION: ${{ needs.pr_commented.outputs.command.action }}
+        run: |
+          echo "COMMENT_ACTION: ${COMMENT_ACTION}"
+        
+
 
   run_test:
     needs: pr_commented
