@@ -36,14 +36,24 @@ jobs:
 
             switch (commentBody.trim() != "/test"){
               case "/test":
+                console.log("in /test")
                 return {
                   action: "test"
                 };
               default:
+                console.log("in default")
                 return {
                   action: "none"
                 };
             }
+      
+      - name: debug
+        env:
+          COMMENT_ACTION: ${{ steps.check_command_script.outputs.result.action }}
+        run: |
+          echo "COMMENT_ACTION: ${COMMENT_ACTION}"
+          echo "output.Action: ${{ steps.check_command_script.outputs.result.action }}
+          echo "output: ${{ steps.check_command_script.outputs.result }}
 
       - id: check_command
         name: Check for a command
