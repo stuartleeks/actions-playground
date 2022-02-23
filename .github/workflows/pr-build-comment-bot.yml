@@ -62,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Could look at moving this to GitHub Script action as well
-          
+
           echo "Getting PR repo..."
           pr_owner=$(gh pr view $PR_NUMBER --repo $REPO --json headRepositoryOwner | jq -r .headRepositoryOwner.login)
           pr_repo=$(gh pr view $PR_NUMBER --repo $REPO --json headRepository | jq -r .headRepository.name)
@@ -80,7 +80,7 @@ jobs:
 
   run_test:
     needs: [pr_commented]
-    if: ${{ needs.pr_commented.outputs.command }} == "run-tests"
+    if: ${{ needs.pr_commented.outputs.command == 'run-tests' }}
     name: Run deploy
     uses: ./.github/workflows/fake-extended-3.yml
     with:
