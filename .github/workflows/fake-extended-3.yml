@@ -6,11 +6,9 @@ on:
       prRepo:
         description: Name of the repo GitHub repo containing the ref (as org/repo )
         type: string
-        required: true
       prRef:
         description: The git ref to checkout
         type: string
-        required: true
     secrets:
       SOMETHING_SECRET:
         required: true
@@ -21,28 +19,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.prRepo }}
+          ref: ${{ inputs.prRef }}
 
       - name: Fake extended tasks
         run: |
           set -e
-          echo
-          echo "PR_REPO: ${PR_REPO}"
-          echo "PR_REF: ${PR_REF}"
-          echo
 
           echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
           echo
 
-          #
-          # NOTE: Here we are using the latest PR commit, i.e. we're not merging with main
-          #       We could merge main (and even test if the PR is mergable before kicking off the run)
-          #
-
-          echo "Load PR code..."
-          git config advice.detachedHead false
-          git remote add fork https://github.com/${PR_REPO}
-          git remote update
-          git checkout ${PR_REF}
           echo
           echo "Pretend that we're doing something more here - show output.txt for PR context :-)"
           cat "output.txt"
