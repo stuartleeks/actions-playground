@@ -22,6 +22,7 @@ jobs:
       command: ${{ steps.check_command_script.outputs.result }}
       prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
       prRef: ${{ steps.get_pr_details.outputs.prRef }}
+      not-md: ${{ steps.get_pr_details.outputs.prRef }}
     steps:
       - id: check_command_script
         name: Check for a command using GitHub script
@@ -78,9 +79,11 @@ jobs:
           echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
           echo "Done"
 
+          echo ${GITHUB_REF}
+
   run_test:
     needs: [pr_commented]
-    if: ${{ needs.pr_commented.outputs.command == 'run-tests' }}
+    if: ${{ needs.pr_commented.outputs.command == 'run-tests' && needs.pr_commented.outputs.not-md == 'true'}}
     name: Run deploy
     uses: ./.github/workflows/fake-extended-3.yml
     with:
