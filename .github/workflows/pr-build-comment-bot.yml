@@ -44,6 +44,15 @@ jobs:
                 return "none";
             }
 
+      - name: Debug
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Debug...."
+          echo "github.event.issue.pull_request: ${{ github.event.issue.pull_request }}"
+          echo "github.event.comment.author_association: ${{ github.event.comment.author_association }}"
+
+
       - name: Show Help
         if: ${{ steps.check_command_script.outputs.result == 'show-help' }}
         env:
