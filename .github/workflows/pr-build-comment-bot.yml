@@ -16,7 +16,7 @@ jobs:
     name: PR comment
     # https://docs.github.com/en/graphql/reference/enums#commentauthorassociation
     # (and https://docs.github.com/en/rest/reference/issues#comments)
-    if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
+    # if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
     outputs:
       command: ${{ steps.check_command_script.outputs.result }}
@@ -35,7 +35,21 @@ jobs:
             console.log(context);
             console.log("=====================");
             console.log(context.payload.comment.user);
-            
+            console.log("=====================");
+
+            // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
+            const commentUsername = context.payload.comment.user.login;
+            const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
+              owner: 'stuartleeks', // TODO - parameterise
+              repo: 'actions-playground',
+              username: commentUsername
+            });
+            console.log(result);
+            console.log("=====================");
+
+            const userHasWriteAccess = result.status == 204;
+            console.log("User has write access: " + userHasWriteAccess);
+
             const commentBody = context.payload.comment.body;
 
             switch (commentBody.trim()){
