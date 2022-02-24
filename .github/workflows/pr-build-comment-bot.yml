@@ -32,14 +32,10 @@ jobs:
         with:
           result-encoding: string
           script: |
-            console.log(context);
-            console.log("=====================");
-            console.log(context.payload.comment.user);
-            console.log("=====================");
-
             // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
             const commentUsername = context.payload.comment.user.login;
-
+            const repoName = context.payload.repository.name;
+            console.log(context.payload.repository.owner);
             let userHasWriteAccess = false;
             try {
               console.log(`Checking if user "${commentUsername}" has write access...`)
@@ -51,11 +47,16 @@ jobs:
               const userHasWriteAccess = result.status == 204;
               console.log(result);
             } catch (err) {
-              //if (err.status !== 404){
+              if (err.status !== 404){
                 console.log(`Error checking if user has write access: ${err.status} (${err.response.data.message}) `)
-              //}
+              }
             }
             console.log("User has write access: " + userHasWriteAccess);
+
+            if (!userHasWriteAccess){
+              // only allow users with write access to run commands
+              return "none";
+            }
 
             const commentBody = context.payload.comment.body;
 
@@ -68,15 +69,6 @@ jobs:
                 console.log("in default")
                 return "none";
             }
-
-      - name: Debug
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Debug...."
-          echo "github.event.issue.pull_request: ${{ github.event.issue.pull_request }}"
-          echo "github.event.comment.author_association: ${{ github.event.comment.author_association }}"
-
 
       - name: Show Help
         if: ${{ steps.check_command_script.outputs.result == 'show-help' }}
