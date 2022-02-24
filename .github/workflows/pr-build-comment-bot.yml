@@ -34,14 +34,17 @@ jobs:
           script: |
             // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
             const commentUsername = context.payload.comment.user.login;
-            const repoName = context.payload.repository.name;
-            console.log(context.payload.repository.owner);
+            const repoFullName = context.payload.repository.full_name;
+            const repoParts = repoFullName.split("/");
+            const repoOwner = repoParts[0];
+            const repoName = repoParts[1];
+
             let userHasWriteAccess = false;
             try {
-              console.log(`Checking if user "${commentUsername}" has write access...`)
+              console.log(`Checking if user "${commentUsername}" has write access to ${repoOwner}/${repoName} ...`)
               const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
-                owner: 'stuartleeks', // TODO - parameterise
-                repo: 'actions-playground',
+                owner: repoOwner,
+                repo: repoName,
                 username: commentUsername
               });
               const userHasWriteAccess = result.status == 204;
