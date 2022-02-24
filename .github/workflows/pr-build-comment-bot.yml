@@ -32,6 +32,11 @@ jobs:
         with:
           result-encoding: string
           script: |
+            console.log(context);
+            console.log("==========================================================================================")
+            console.log(context.payload);
+            console.log("==========================================================================================")
+
             // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
             const commentUsername = context.payload.comment.user.login;
             const repoFullName = context.payload.repository.full_name;
