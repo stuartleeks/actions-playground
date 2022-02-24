@@ -32,6 +32,8 @@ jobs:
         with:
           result-encoding: string
           script: |
+            console.log(context);
+            
             const commentBody = context.payload.comment.body;
 
             switch (commentBody.trim()){
