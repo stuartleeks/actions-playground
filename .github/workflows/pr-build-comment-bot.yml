@@ -33,6 +33,8 @@ jobs:
           result-encoding: string
           script: |
             console.log(context);
+            console.log("=====================");
+            console.log(context.payload.comment.user);
             
             const commentBody = context.payload.comment.body;
 
