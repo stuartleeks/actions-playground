@@ -104,6 +104,44 @@ jobs:
           echo "output: ${{ steps.calcs.outputs.runSomething }}"
 
 
+      - name: Show Help
+        if: ${{ steps.check_command.outputs.result == 'show-help' }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.event.repository.full_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Showing help on PR ${PR_NUMBER}"
+          gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello<br/><br/>You can use the following commands:<br/>    /test - run tests on a PR<br/>    /help - show this help"
+
+      - id: get_pr_details
+        name: Get PR details
+        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.event.repository.full_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Could look at moving this to GitHub Script action as well
+
+          echo "Getting PR repo..."
+          pr_owner=$(gh pr view $PR_NUMBER --repo $REPO --json headRepositoryOwner | jq -r .headRepositoryOwner.login)
+          pr_repo=$(gh pr view $PR_NUMBER --repo $REPO --json headRepository | jq -r .headRepository.name)
+          echo -e "\tPR from $pr_owner/$pr_repo"
+
+          echo "Getting PR ref..."
+          ref=$(gh pr view $PR_NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
+          echo -e "\tLatest commit ref: $ref"
+          echo
+
+          echo "Setting outputs"
+          echo "::set-output name=prRef::${ref}"
+          echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
+          echo "Done"
+
+          echo ${GITHUB_REF}
+
+
 
       - name: Checkout
         if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
@@ -155,43 +193,6 @@ jobs:
             not-md:
               # we need to check for changes in files other than *.md
               - '**/!(*.md)'
-
-      - name: Show Help
-        if: ${{ steps.check_command.outputs.result == 'show-help' }}
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.event.repository.full_name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Showing help on PR ${PR_NUMBER}"
-          gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello<br/><br/>You can use the following commands:<br/>    /test - run tests on a PR<br/>    /help - show this help"
-
-      - id: get_pr_details
-        name: Get PR details
-        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.event.repository.full_name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Could look at moving this to GitHub Script action as well
-
-          echo "Getting PR repo..."
-          pr_owner=$(gh pr view $PR_NUMBER --repo $REPO --json headRepositoryOwner | jq -r .headRepositoryOwner.login)
-          pr_repo=$(gh pr view $PR_NUMBER --repo $REPO --json headRepository | jq -r .headRepository.name)
-          echo -e "\tPR from $pr_owner/$pr_repo"
-
-          echo "Getting PR ref..."
-          ref=$(gh pr view $PR_NUMBER --repo $REPO --json commits | jq -r ".[] | last | .oid")
-          echo -e "\tLatest commit ref: $ref"
-          echo
-
-          echo "Setting outputs"
-          echo "::set-output name=prRef::${ref}"
-          echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
-          echo "Done"
-
-          echo ${GITHUB_REF}
 
   run_test:
     needs: [pr_commented]
