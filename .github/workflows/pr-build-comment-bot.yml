@@ -191,6 +191,7 @@ jobs:
         if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
         with:
           base: main
+          ref: ${{ steps.get_pr_details.outputs.prRef }}
           filters: |
             not-md:
               # we need to check for changes in files other than *.md
