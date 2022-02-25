@@ -147,8 +147,8 @@ jobs:
         if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
         uses: actions/checkout@v2
         with:
-          repository: ${{ inputs.prRepo }}
-          ref: ${{ inputs.prRef }}
+          repository: ${{ steps.get_pr_details.outputs.prRepo }}
+          ref: ${{ steps.get_pr_details.outputs.prRef }}
           persist-credentials: false
 
       - name: Checkout (CLI)
@@ -163,6 +163,7 @@ jobs:
           #
           git status
           echo "-------------------------------------"
+          git rev-parse HEAD
           git rev-parse --abbrev-ref HEAD
           echo "-------------------------------------"
 
@@ -176,6 +177,7 @@ jobs:
           echo "-------------------------------------"
           git status
           echo "-------------------------------------"
+          git rev-parse HEAD
           git rev-parse --abbrev-ref HEAD
 
 
