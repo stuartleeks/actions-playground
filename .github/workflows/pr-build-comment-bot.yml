@@ -105,14 +105,14 @@ jobs:
 
 
 
-      # - name: Checkout
-      #   if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
-      #   uses: actions/checkout@v2
-      #   with:
-      #     repository: ${{ inputs.prRepo }}
-      #     ref: ${{ inputs.prRef }}
-      #     path: test
-      #     persist-credentials: false
+      - name: Checkout
+        if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.prRepo }}
+          ref: ${{ inputs.prRef }}
+          path: test
+          persist-credentials: false
 
       - name: Checkout (CLI)
         env:
@@ -124,12 +124,23 @@ jobs:
           # NOTE: Here we are using the latest PR commit, i.e. we're not merging with main
           #       We could merge main (and even test if the PR is mergable before kicking off the run)
           #
+          git status
+          echo "-------------------------------------"
+          git rev-parse --abbrev-ref HEAD
+          echo "-------------------------------------"
 
           echo "Load PR code..."
           git config advice.detachedHead false
           git remote add fork https://github.com/${PR_REPO}
           git remote update
           git checkout ${PR_REF}
+
+
+          echo "-------------------------------------"
+          git status
+          echo "-------------------------------------"
+          git rev-parse --abbrev-ref HEAD
+
 
       - name: Info
         run: |
