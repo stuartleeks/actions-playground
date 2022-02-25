@@ -206,6 +206,17 @@ jobs:
               # we need to check for changes in files other than *.md
               - '**/!(*.md)'
 
+      - name: Comment with link to run
+        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.event.repository.full_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          echo "Showing help on PR ${PR_NUMBER}"
+          gh pr comment ${PR_NUMBER} --repo $REPO --body "Running tests: https://github.com/${REPO}/actions/runs/${RUN_ID}"
+
   debug:
     needs: [pr_commented]
     name: debug
