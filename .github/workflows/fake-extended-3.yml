@@ -3,9 +3,9 @@ name: fake-extended-3
 on:
   workflow_call:
     inputs:
-      prRepo:
-        description: Name of the repo GitHub repo containing the ref (as org/repo )
-        type: string
+      # prRepo:
+      #   description: Name of the repo GitHub repo containing the ref (as org/repo )
+      #   type: string
       prRef:
         description: The git ref to checkout
         type: string
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: ${{ inputs.prRepo }}
+          # repository: ${{ inputs.prRepo }}
           ref: ${{ inputs.prRef }}
 
       - name: Fake extended tasks
@@ -35,5 +35,5 @@ jobs:
           cat "output.txt"
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
-          PR_REPO: ${{ inputs.prRepo }}
+          # PR_REPO: ${{ inputs.prRepo }}
           PR_REF: ${{ inputs.prRef }}
