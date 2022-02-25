@@ -23,7 +23,7 @@ jobs:
       prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
       prRef: ${{ steps.get_pr_details.outputs.prRef }}
       potentialMergeCommit: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
-      not-md: ${{ steps.get_pr_details.outputs.prRef }}
+      not-md: ${{ steps.filter.outputs.not-md }}
     steps:
       - id: check_command
         name: Check for a command using GitHub script
@@ -208,7 +208,7 @@ jobs:
 
   debug:
     needs: [pr_commented]
-    name: Run deploy
+    name: debug
     runs-on: ubuntu-latest
     steps:
       - name: Show result
