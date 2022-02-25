@@ -15,6 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Dump context
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            console.log(context);
+            console.log("==========================================================================================")
+            console.log(context.payload);
+            console.log("==========================================================================================")
+
       - name: Fake building...
         run: |
           echo Hello there!
