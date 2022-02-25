@@ -16,15 +16,15 @@ jobs:
     name: PR comment
     # https://docs.github.com/en/graphql/reference/enums#commentauthorassociation
     # (and https://docs.github.com/en/rest/reference/issues#comments)
-    # if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
     outputs:
-      command: ${{ steps.check_command_script.outputs.result }}
+      command: ${{ steps.check_command.outputs.result }}
       prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
       prRef: ${{ steps.get_pr_details.outputs.prRef }}
       not-md: ${{ steps.get_pr_details.outputs.prRef }}
     steps:
-      - id: check_command_script
+      - id: check_command
         name: Check for a command using GitHub script
         uses: actions/github-script@v6
         env:
@@ -37,42 +37,44 @@ jobs:
             console.log(context.payload);
             console.log("==========================================================================================")
 
-            // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
-            const commentUsername = context.payload.comment.user.login;
-            const repoFullName = context.payload.repository.full_name;
-            const repoParts = repoFullName.split("/");
-            const repoOwner = repoParts[0];
-            const repoName = repoParts[1];
-
-            let userHasWriteAccess = false;
-            try {
-              console.log(`Checking if user "${commentUsername}" has write access to ${repoOwner}/${repoName} ...`)
-              const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
-                owner: repoOwner,
-                repo: repoName,
-                username: commentUsername
-              });
-              const userHasWriteAccess = result.status == 204;
-              console.log(result);
-            } catch (err) {
-              if (err.status !== 404){
-                console.log(`Error checking if user has write access: ${err.status} (${err.response.data.message}) `)
-              }
-            }
-            console.log("User has write access: " + userHasWriteAccess);
-
-            if (!userHasWriteAccess){
-              // only allow users with write access to run commands
-              return "none";
-            }
+            //// https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
+            //const commentUsername = context.payload.comment.user.login;
+            //const repoFullName = context.payload.repository.full_name;
+            //const repoParts = repoFullName.split("/");
+            //const repoOwner = repoParts[0];
+            //const repoName = repoParts[1];
+            //
+            //let userHasWriteAccess = false;
+            //try {
+            //  console.log(`Checking if user "${commentUsername}" has write access to ${repoOwner}/${repoName} ...`)
+            //  const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
+            //    owner: repoOwner,
+            //    repo: repoName,
+            //    username: commentUsername
+            //  });
+            //  const userHasWriteAccess = result.status == 204;
+            //  console.log(result);
+            //} catch (err) {
+            //  if (err.status !== 404){
+            //    console.log(`Error checking if user has write access: ${err.status} (${err.response.data.message}) `)
+            //  }
+            //}
+            //console.log("User has write access: " + userHasWriteAccess);
+            //
+            //if (!userHasWriteAccess){
+            //  // only allow users with write access to run commands
+            //  return "none";
+            //}
 
             const commentBody = context.payload.comment.body;
 
             console.log("::set-output name=runSomething::true");
             switch (commentBody.trim()){
               case "/test":
+                console.log("Result: run-tests");
                 return "run-tests";
               case "/help":
+                console.log("Result: show-help");
                 return "show-help";
               default:
                 console.log("in default")
@@ -81,11 +83,11 @@ jobs:
 
       - name: Show result
         env:
-          RUN_SOMETHING: ${{ steps.check_command_script.outputs.runSomething }}
+          RUN_SOMETHING: ${{ steps.check_command.outputs.runSomething }}
         run: |
           echo "hi"
           echo "env var: ${RUN_SOMETHING}"
-          echo "output: ${{ steps.check_command_script.outputs.runSomething }}"
+          echo "output: ${{ steps.check_command.outputs.runSomething }}"
 
       - name: Calcs
         id: calcs
@@ -101,8 +103,33 @@ jobs:
           echo "env var: ${RUN_SOMETHING}"
           echo "output: ${{ steps.calcs.outputs.runSomething }}"
 
+
+
+      - name: Checkout
+        if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.prRepo }}
+          ref: ${{ inputs.prRef }}
+          path: test
+          persist-credentials: false
+      - name: Info
+        run: |
+          git status
+          echo "-------------------------------------"
+          git rev-parse --abbrev-ref HEAD
+      - uses: dorny/paths-filter@v2
+        id: filter
+        if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
+        with:
+          base: main
+          filters: |
+            not-md:
+              # we need to check for changes in files other than *.md
+              - '**/!(*.md)'
+
       - name: Show Help
-        if: ${{ steps.check_command_script.outputs.result == 'show-help' }}
+        if: ${{ steps.check_command.outputs.result == 'show-help' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
@@ -113,7 +140,7 @@ jobs:
 
       - id: get_pr_details
         name: Get PR details
-        if: ${{ steps.check_command_script.outputs.result == 'run-tests' }}
+        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
