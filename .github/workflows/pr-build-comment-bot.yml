@@ -206,6 +206,17 @@ jobs:
               # we need to check for changes in files other than *.md
               - '**/!(*.md)'
 
+  debug:
+    needs: [pr_commented]
+    name: Run deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show result
+        run: |
+          echo "hi"
+          echo "command: ${{ needs.pr_commented.outputs.command }}"
+          echo "not-md: ${{ needs.pr_commented.outputs.not-md }}"
+
   run_test:
     needs: [pr_commented]
     if: ${{ needs.pr_commented.outputs.command == 'run-tests' && needs.pr_commented.outputs.not-md == 'true'}}
