@@ -134,9 +134,15 @@ jobs:
           echo -e "\tLatest commit ref: $ref"
           echo
 
+          potentialMergeCommit=$(gh pr view $PR_NUMBER --repo $REPO --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
+          echo -e "\tpotentialMergeCommit: $potentialMergeCommit"
+          echo
+
+
           echo "Setting outputs"
           echo "::set-output name=prRef::${ref}"
           echo "::set-output name=prRepo::${pr_owner}/${pr_repo}"
+          echo "::set-output name=potentialMergeCommit::${potentialMergeCommit}"
           echo "Done"
 
           echo ${GITHUB_REF}
@@ -147,8 +153,9 @@ jobs:
         if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
         uses: actions/checkout@v2
         with:
-          repository: ${{ steps.get_pr_details.outputs.prRepo }}
-          ref: ${{ steps.get_pr_details.outputs.prRef }}
+          # repository: ${{ steps.get_pr_details.outputs.prRepo }}
+          # ref: ${{ steps.get_pr_details.outputs.prRef }}
+          ref: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
           persist-credentials: false
 
       - name: Checkout (CLI)
