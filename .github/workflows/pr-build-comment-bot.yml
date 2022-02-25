@@ -154,8 +154,8 @@ jobs:
       - name: Checkout (CLI)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_REPO: ${{ inputs.prRepo }}
-          PR_REF: ${{ inputs.prRef }}
+          PR_REPO: ${{ steps.get_pr_details.outputs.prRepo }}
+          PR_REF: ${{ steps.get_pr_details.outputs.prRef }}
         run: |
           #
           # NOTE: Here we are using the latest PR commit, i.e. we're not merging with main
