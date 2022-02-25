@@ -111,7 +111,6 @@ jobs:
         with:
           repository: ${{ inputs.prRepo }}
           ref: ${{ inputs.prRef }}
-          path: test
           persist-credentials: false
 
       - name: Checkout (CLI)
