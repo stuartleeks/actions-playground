@@ -70,6 +70,7 @@ jobs:
 
             switch (commentBody.trim()){
               case "/test":
+                console.log("::set-output name=runSomething::true");
                 return "run-tests";
               case "/help":
                 return "show-help";
@@ -77,6 +78,17 @@ jobs:
                 console.log("in default")
                 return "none";
             }
+
+
+      - name: Show result
+        env:
+          RUN_SOMETHING: ${{ steps.check_command_script.outputs.runSomething }}
+          REPO: ${{ github.event.repository.full_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "hi"
+          echo "env var: ${RUN_SOMETHING}"
+          echo "output: ${{ steps.check_command_script.outputs.runSomething }}"
 
       - name: Show Help
         if: ${{ steps.check_command_script.outputs.result == 'show-help' }}
