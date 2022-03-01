@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
+    types: [labeled]
     branches: [ main ]
 
   workflow_dispatch:
@@ -25,9 +26,9 @@ jobs:
             console.log(context.payload);
             console.log("==========================================================================================")
 
-      - name: Fake building...
+      - name: Fake Tests
         run: |
-          echo Hello there!
+          echo Hello there - I'm pretending I've run some tests!
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
