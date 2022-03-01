@@ -232,7 +232,7 @@ jobs:
     needs: [pr_commented]
     if: ${{ needs.pr_commented.outputs.command == 'run-tests' && needs.pr_commented.outputs.not-md == 'true'}}
     name: Run deploy
-    uses: ./.github/workflows/fake-extended-3.yml@refs/pull/${{ github.event.issue.number }}/merge
+    uses: ./.github/workflows/fake-extended-3.yml
     with:
       prRef: "refs/pull/${{ github.event.issue.number }}/merge"
       # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
