@@ -23,6 +23,13 @@ jobs:
           # repository: ${{ inputs.prRepo }}
           ref: ${{ inputs.prRef }}
 
+      - name: More output
+        run: |
+          echo
+          echo "git SHA:    $(git rev-parse --abbrev-ref HEAD)"
+          echo "git ref:    $(git rev-parse HEAD)"
+          echo "github ref: ${GITHUB_REF}"
+
       - name: Fake extended tasks
         run: |
           set -e
