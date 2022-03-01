@@ -234,8 +234,9 @@ jobs:
     name: Run deploy
     uses: ./.github/workflows/fake-extended-3.yml
     with:
-      prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
-      # prRef: ${{ needs.pr_commented.outputs.prRef }}
-      # prRepo: ${{ needs.pr_commented.outputs.prRepo }}
+      prRef: "refs/pull/${{ github.event.issue.number }}/merge"
+      # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
+      # # prRef: ${{ needs.pr_commented.outputs.prRef }}
+      # # prRepo: ${{ needs.pr_commented.outputs.prRepo }}
     secrets:
       SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
