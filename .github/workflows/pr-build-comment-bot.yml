@@ -235,6 +235,7 @@ jobs:
     uses: ./.github/workflows/fake-extended-3.yml
     with:
       prRef: "refs/pull/${{ github.event.issue.number }}/merge"
+      test1: something
       # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
       # # prRef: ${{ needs.pr_commented.outputs.prRef }}
       # # prRepo: ${{ needs.pr_commented.outputs.prRepo }}

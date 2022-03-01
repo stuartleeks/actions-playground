@@ -9,6 +9,14 @@ on:
       prRef:
         description: The git ref to checkout
         type: string
+      test1:
+        description: testing params and conditions
+        type: string
+        required: false
+      test2:
+        description: testing params and conditions
+        type: string
+        required: false
     secrets:
       SOMETHING_SECRET:
         required: true
@@ -29,6 +37,15 @@ jobs:
           echo "git SHA:    $(git rev-parse --abbrev-ref HEAD)"
           echo "git ref:    $(git rev-parse HEAD)"
           echo "github ref: ${GITHUB_REF}"
+
+      - name: Test1
+        if: ${{ inputs.test1 }}
+        run: |
+          echo "Test1!"
+      - name: Test2
+        if: ${{ inputs.test2 }}
+        run: |
+          echo "Test2!"
 
       - name: Fake extended tasks
         run: |
