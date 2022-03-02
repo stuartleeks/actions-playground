@@ -39,13 +39,13 @@ jobs:
           echo "github ref: ${GITHUB_REF}"
 
       - name: Test1
-        if: ${{ inputs.test1 }}
+        if: ${{ inputs.test1 != '' }}
         run: |
           echo "Test1!"
       - name: Test2
-        if: ${{ inputs.test2 }}
+        if: ${{ inputs.test2 == '' }}
         run: |
-          echo "Test2!"
+          echo "Not Test2!"
 
       - name: Fake extended tasks
         run: |
