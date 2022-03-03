@@ -151,7 +151,9 @@ jobs:
 
 
       - name: Checkout
-        if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
+        if: |
+          ${{ steps.check_command.outputs.result == 'run-tests'
+              || steps.check_command.outputs.result == 'force-approve' }}
         uses: actions/checkout@v2
         with:
           # repository: ${{ steps.get_pr_details.outputs.prRepo }}
