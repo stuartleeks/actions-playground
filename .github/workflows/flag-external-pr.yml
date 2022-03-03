@@ -26,18 +26,16 @@ jobs:
 
             // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
             const username = context.payload.pull_request.user.login;
-            const repoFullName = context.payload.repository.full_name;
-            const repoParts = repoFullName.split("/");
-            const repoOwner = repoParts[0];
-            const repoName = repoParts[1];
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
 
             let userHasWriteAccess = false;
             try {
-              console.log(`Checking if user "${username}" has write access to ${repoOwner}/${repoName} ...`)
+              console.log(`Checking if user "${username}" has write access to ${owner}/${owner} ...`)
               const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
-                owner: repoOwner,
-                repo: repoName,
-                username: username
+                owner,
+                repo,
+                username
               });
               userHasWriteAccess = result.status === 204;
               console.log("success")
@@ -56,8 +54,8 @@ jobs:
             if (!userHasWriteAccess) {
               console.log("Adding label to PR " + context.payload.pull_request.number)
               github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
+                owner,
+                repo,
                 issue_number: context.payload.pull_request.number,
                 labels: ['external']
               });
