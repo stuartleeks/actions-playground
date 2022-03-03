@@ -159,35 +159,41 @@ jobs:
           ref: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
           persist-credentials: false
 
-      - name: Checkout (CLI)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_REPO: ${{ steps.get_pr_details.outputs.prRepo }}
-          PR_REF: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
-          # PR_REF: ${{ steps.get_pr_details.outputs.prRef }}
+      # - name: Checkout (CLI)
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     PR_REPO: ${{ steps.get_pr_details.outputs.prRepo }}
+      #     PR_REF: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
+      #     # PR_REF: ${{ steps.get_pr_details.outputs.prRef }}
+      #   run: |
+      #     #
+      #     # NOTE: Here we are using the latest PR commit, i.e. we're not merging with main
+      #     #       We could merge main (and even test if the PR is mergable before kicking off the run)
+      #     #
+      #     git status
+      #     echo "-------------------------------------"
+      #     git rev-parse HEAD
+      #     git rev-parse --abbrev-ref HEAD
+      #     echo "-------------------------------------"
+
+      #     echo "Load PR code..."
+      #     git config advice.detachedHead false
+      #     git remote add fork https://github.com/${PR_REPO}
+      #     git remote update
+      #     git checkout ${PR_REF}
+
+
+      #     echo "-------------------------------------"
+      #     git status
+      #     echo "-------------------------------------"
+      #     git rev-parse HEAD
+      #     git rev-parse --abbrev-ref HEAD
+
+      - name: Test script
         run: |
-          #
-          # NOTE: Here we are using the latest PR commit, i.e. we're not merging with main
-          #       We could merge main (and even test if the PR is mergable before kicking off the run)
-          #
-          git status
-          echo "-------------------------------------"
-          git rev-parse HEAD
-          git rev-parse --abbrev-ref HEAD
-          echo "-------------------------------------"
-
-          echo "Load PR code..."
-          git config advice.detachedHead false
-          git remote add fork https://github.com/${PR_REPO}
-          git remote update
-          git checkout ${PR_REF}
-
-
-          echo "-------------------------------------"
-          git status
-          echo "-------------------------------------"
-          git rev-parse HEAD
-          git rev-parse --abbrev-ref HEAD
+          echo "running script..."
+          scripts/test.sh
+          echo "done"
 
 
       - name: Info
