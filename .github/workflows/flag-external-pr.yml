@@ -21,10 +21,11 @@ jobs:
             // Unfortunately, that always shows MEMBER if you are in the microsoft org and have that set to publicly visible
             // (Can check via https://github.com/orgs/microsoft/people?query=<username>)
 
+            console.log(context);
             console.log(context.payload);
 
             // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
-            const commentUsername = context.payload.comment.user.login;
+            const username = context.payload.pull_request.user.login;
             const repoFullName = context.payload.repository.full_name;
             const repoParts = repoFullName.split("/");
             const repoOwner = repoParts[0];
@@ -32,11 +33,11 @@ jobs:
 
             let userHasWriteAccess = false;
             try {
-              console.log(`Checking if user "${commentUsername}" has write access to ${repoOwner}/${repoName} ...`)
+              console.log(`Checking if user "${username}" has write access to ${repoOwner}/${repoName} ...`)
               const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
                 owner: repoOwner,
                 repo: repoName,
-                username: commentUsername
+                username: username
               });
               userHasWriteAccess = result.status === 204;
               console.log("success")
@@ -53,10 +54,11 @@ jobs:
             console.log("User has write access: " + userHasWriteAccess);
 
             if (!userHasWriteAccess) {
-              await github.issues.addLabels({
+              console.log("Adding label to PR " + context.payload.pull_request.number)
+              github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
+                issue_number: context.payload.pull_request.number,
                 labels: ['external']
               });
               return "none"; // only allow actions for users with write access
