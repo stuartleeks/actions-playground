@@ -1,0 +1,61 @@
+name: flag_external_pr
+
+on:
+  pull_request_target:
+    types: [opened, reopened] # only run on new PRs
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#issue_comment
+    # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#issue_comment
+
+jobs:
+  check_author:
+    name: Check PR author
+    runs-on: ubuntu-latest
+    steps:
+      - id: check_command
+        name: Check for a command using GitHub script
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            // Previously, we attempted to use github.event.comment.author_association to check for OWNER or COLLABORATOR
+            // Unfortunately, that always shows MEMBER if you are in the microsoft org and have that set to publicly visible
+            // (Can check via https://github.com/orgs/microsoft/people?query=<username>)
+
+            // https://docs.github.com/en/rest/reference/collaborators#check-if-a-user-is-a-repository-collaborator
+            const commentUsername = context.payload.comment.user.login;
+            const repoFullName = context.payload.repository.full_name;
+            const repoParts = repoFullName.split("/");
+            const repoOwner = repoParts[0];
+            const repoName = repoParts[1];
+
+            let userHasWriteAccess = false;
+            try {
+              console.log(`Checking if user "${commentUsername}" has write access to ${repoOwner}/${repoName} ...`)
+              const result = await github.request('GET /repos/{owner}/{repo}/collaborators/{username}', {
+                owner: repoOwner,
+                repo: repoName,
+                username: commentUsername
+              });
+              userHasWriteAccess = result.status === 204;
+              console.log("success")
+              console.log(result);
+            } catch (err) {
+              console.log("error")
+              console.log(err);
+              if (err.status === 404){
+                console.log("User not found in collaborators");
+              } else {
+                console.log(`Error checking if user has write access: ${err.status} (${err.response.data.message}) `)
+              }
+            }
+            console.log("User has write access: " + userHasWriteAccess);
+
+            if (!userHasWriteAccess) {
+              await github.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['external']
+              });
+              return "none"; // only allow actions for users with write access
+            }
