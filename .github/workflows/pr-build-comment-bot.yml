@@ -203,7 +203,9 @@ jobs:
           git rev-parse --abbrev-ref HEAD
       - uses: dorny/paths-filter@v2
         id: filter
-        if: ${{ steps.check_command.outputs.result == 'run-tests' || steps.check_command.outputs.result == 'force-approve' }}
+        if: |
+          ${{ steps.check_command.outputs.result == 'run-tests' 
+          || steps.check_command.outputs.result == 'force-approve' }}
         with:
           base: main
           ref: ${{ steps.get_pr_details.outputs.prRef }}
