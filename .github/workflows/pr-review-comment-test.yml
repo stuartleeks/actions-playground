@@ -1,8 +1,9 @@
 name: pr_review_comment_test
 
 on:
-  pull_request_review_comment:
-    types: [created]
+  pull_request_review_comment
+  # pull_request_review_comment:
+  #   types: [created]
 
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#issue_comment
 # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#issue_comment
