@@ -123,7 +123,8 @@ jobs:
 
       - id: get_pr_details
         name: Get PR details
-        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
+        if: |
+          ${{ steps.check_command.outputs.result == 'run-tests' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
