@@ -29,6 +29,8 @@ jobs:
         name: Check for a command using GitHub script
         uses: actions/github-script@v6
         env:
+          TEST: ${{ format('fmt-{0}-string', 
+                      'value-here') }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
         with:
           result-encoding: string
