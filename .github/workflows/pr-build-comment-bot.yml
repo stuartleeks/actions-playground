@@ -29,8 +29,6 @@ jobs:
         name: Check for a command using GitHub script
         uses: actions/github-script@v6
         env:
-          TEST: ${{ format('fmt-{0}-string', 
-                      'value-here') }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
         with:
           result-encoding: string
@@ -88,9 +86,12 @@ jobs:
       - name: Show result
         env:
           RUN_SOMETHING: ${{ steps.check_command.outputs.runSomething }}
+          TEST: ${{ format('fmt-{0}-string', 
+                      'value-here') }}
         run: |
           echo "hi"
           echo "env var: ${RUN_SOMETHING}"
+          echo "env var - test: ${TEST}"
           echo "output: ${{ steps.check_command.outputs.runSomething }}"
 
       - name: Calcs
