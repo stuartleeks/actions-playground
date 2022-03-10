@@ -68,9 +68,10 @@ jobs:
             //}
 
             const commentBody = context.payload.comment.body;
+            const commentFirstLine = commentBody.split("\n")[0];
 
             console.log("::set-output name=runSomething::true");
-            switch (commentBody.trim()){
+            switch (commentFirstLine.trim()){
               case "/test":
                 console.log("Result: run-tests");
                 return "run-tests";
