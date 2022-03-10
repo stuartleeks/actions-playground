@@ -117,7 +117,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Showing help on PR ${PR_NUMBER}"
-          gh pr comment ${PR_NUMBER} --repo $REPO --body "Hello<br/><br/>You can use the following commands:<br/>    /test - run tests on a PR<br/>    /help - show this help"
+          gh pr comment ${PR_NUMBER} \
+            --repo $REPO \
+            --body "Hello<br/><br/>You can use the following commands:<br/>    /test - run tests on a PR<br/>    /help - show this help"
 
       - id: get_pr_details
         name: Get PR details
