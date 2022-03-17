@@ -70,11 +70,10 @@ jobs:
             const commentBody = context.payload.comment.body;
             const commentFirstLine = commentBody.split("\n")[0];
 
-            let command="none;
             switch (commentFirstLine.trim()){
               case "/test":
                 console.log("Result: run-tests");
-                command = "run-tests";
+                return "run-tests";
               case "/help":
                 console.log("Result: show-help");
                 return "show-help";
@@ -123,8 +122,7 @@ jobs:
 
       - id: get_pr_details
         name: Get PR details
-        if: |
-          ${{ steps.check_command.outputs.result == 'run-tests' }}
+        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
