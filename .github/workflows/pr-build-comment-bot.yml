@@ -70,11 +70,11 @@ jobs:
             const commentBody = context.payload.comment.body;
             const commentFirstLine = commentBody.split("\n")[0];
 
-            console.log("::set-output name=runSomething::true");
+            let command="none;
             switch (commentFirstLine.trim()){
               case "/test":
                 console.log("Result: run-tests");
-                return "run-tests";
+                command = "run-tests";
               case "/help":
                 console.log("Result: show-help");
                 return "show-help";
@@ -155,7 +155,13 @@ jobs:
 
           echo ${GITHUB_REF}
 
+          echo "${PR_NUMBER}" > pr_number.txt
 
+      - uses: actions/upload-artifact@v3
+        name: Add pr_number artifact
+        with:
+          name: pr_number
+          path: pr_number.txt
 
       - name: Checkout
         if: |

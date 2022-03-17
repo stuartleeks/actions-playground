@@ -57,6 +57,9 @@ jobs:
           echo
           echo "Pretend that we're doing something more here - show output.txt for PR context :-)"
           cat "output.txt"
+
+          echo "Sleeping to simulate work..."
+          sleep 60s
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           # PR_REPO: ${{ inputs.prRepo }}
