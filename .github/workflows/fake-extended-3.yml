@@ -48,6 +48,41 @@ jobs:
         run: |
           echo "Not Test2!"
 
+      - name: Set values
+        id: set_values
+        run: |
+          # We want to be able to use the environment secret for TRE_ID when running against main
+          # and the PR value when running a PR
+          #
+          # For main builds, the values coming from repo/environment secrets means that they 
+          # will be masked in the output
+          # For PR builds, it is helpful if these values are not masked, which is why the values
+          # were moved from secrets to inputs
+          #
+          # However, the following error occurrs when attempting to pass secrets as  inputs:
+          #     "Unrecognized named-value: 'secrets'"
+          #
+          # As a way round this, the values manipulated in this step are allowed to be omitted
+          # when invoking this workflow and are defaulted to the environment secrets if missing.
+          #
+          # This way, the main build can omit the values and PR builds can supply them
+          # Future steps in this workflow can then use the outputs from this step and will
+          # get the correct values
+          
+          
+          echo "running..."
+
+          echo "::set-output name=test1::${TEST1:-$TEST1_DEFAULT}"
+          echo "::set-output name=test2::${TEST2:-$TEST2_DEFAULT}"
+          echo "done."
+        env:
+          TEST1: ${{ inputs.test1 }}
+          TEST1_DEFAULT:  ${{ secrets.SOMETHING_SECRET }}
+          TEST2: ${{ inputs.test2 }}
+          TEST2_DEFAULT:  ${{ secrets.SOMETHING_SECRET }}
+
+
+
       - name: Fake extended tasks
         run: |
           set -e
@@ -55,7 +90,9 @@ jobs:
           echo "SOMETHING_SECRET: $SOMETHING_SECRET"
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
           echo "TEST1: $TEST1"
-          echo "Dubious manipulation to get another secret.... ${TEST1:0:1} ${TEST1:1:100}"
+          echo "Dubious manipulation to value.... ${TEST1:0:1} ${TEST1:1:100}"
+          echo "TEST2: $TEST2"
+          echo "Dubious manipulation to value.... ${TEST2:0:1} ${TEST2:1:100}"
           echo
 
           echo
@@ -66,7 +103,8 @@ jobs:
           # sleep 60s
         env:
           # test1 has a secret from the repo for main branch build
-          TEST1: ${{ inputs.test1 }}
+          TEST1: ${{ steps.set_values.outputs.test1 }}
+          TEST2: ${{ steps.set_values.outputs.test2 }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           # PR_REPO: ${{ inputs.prRepo }}
           PR_REF: ${{ inputs.prRef }}
