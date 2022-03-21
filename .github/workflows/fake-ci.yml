@@ -69,17 +69,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Fake building...
+      - name: Set outputs
         id: set_outputs
         run: |
+          echo "running..."
           echo "::set-output name=plainValue::PLAIN_VALUE_HERE"
           echo "::set-output name=anotherSecret::${ANOTHER_SECRET}"
           echo "::set-output name=somethingSecret::${SOMETHING_SECRET}"
+          echo "done."
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
 
-      - name: Output
+      - name: Show output
         run: |
           echo "X_PLAIN_VALUE: $X_PLAIN_VALUE"
           echo "Dubious manipulation to get a secret.... ${X_PLAIN_VALUE:0:1} ${X_PLAIN_VALUE:1:100}"
