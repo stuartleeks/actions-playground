@@ -77,9 +77,9 @@ jobs:
           echo "done."
         env:
           TEST1: ${{ inputs.test1 }}
-          TEST1_DEFAULT:  ${{ secrets.SOMETHING_SECRET }}
+          TEST1_DEFAULT:  ${{ secrets.ANOTHER_SECRET }}
           TEST2: ${{ inputs.test2 }}
-          TEST2_DEFAULT:  ${{ secrets.SOMETHING_SECRET }}
+          TEST2_DEFAULT:  ${{ secrets.ANOTHER_SECRET }}
 
 
 
