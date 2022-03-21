@@ -93,8 +93,8 @@ jobs:
         run: |
           set -e
 
-          echo "SOMETHING_SECRET: $SOMETHING_SECRET"
-          echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+          # echo "SOMETHING_SECRET: $SOMETHING_SECRET"
+          # echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
           echo "TEST1: $TEST1"
           echo "Dubious manipulation to value.... ${TEST1:0:1} ${TEST1:1:100}"
           echo "TEST2: $TEST2"
@@ -111,6 +111,6 @@ jobs:
           # test1 has a secret from the repo for main branch build
           TEST1: ${{ steps.set_values.outputs.test1 }}
           TEST2: ${{ steps.set_values.outputs.test2 }}
-          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
-          # PR_REPO: ${{ inputs.prRepo }}
-          PR_REF: ${{ inputs.prRef }}
+          # SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+          # # PR_REPO: ${{ inputs.prRepo }}
+          # PR_REF: ${{ inputs.prRef }}
