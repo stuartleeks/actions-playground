@@ -78,6 +78,11 @@ jobs:
           
           echo "running..."
 
+          if [[ -z ${TEST1_INPUT} && -z ${TEST1_SECRET}]]; then
+            echo "Must set one of TEST1_INPUT or TEST1_SECRET"
+            exit 1
+          fi
+
           echo "::set-output name=test1::${TEST1_INPUT:-$TEST1_SECRET}"
           echo "::set-output name=test2::${TEST2_INPUT:-$TEST2_SECRET}"
           echo "done."
