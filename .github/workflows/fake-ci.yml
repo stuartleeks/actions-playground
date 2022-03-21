@@ -88,7 +88,7 @@ jobs:
           echo "X_ANOTHER_SECRET: $X_ANOTHER_SECRET"
           echo "Dubious manipulation to get another secret.... ${X_ANOTHER_SECRET:0:1} ${X_ANOTHER_SECRET:1:100}"
         env:
-          X_PLAIN_VALUE: ${{ steps.set_outputs.outputs.planValue }}
+          X_PLAIN_VALUE: ${{ steps.set_outputs.outputs.plainValue }}
           X_ANOTHER_SECRET: ${{ steps.set_outputs.outputs.anotherSecret }}
           X_SOMETHING_SECRET: ${{ steps.set_outputs.outputs.somethingSecret }}
 
@@ -106,7 +106,7 @@ jobs:
           echo "X_ANOTHER_SECRET: $X_ANOTHER_SECRET"
           echo "Dubious manipulation to get another secret.... ${X_ANOTHER_SECRET:0:1} ${X_ANOTHER_SECRET:1:100}"
         env:
-          X_PLAIN_VALUE: ${{ needs.prep_run_test.outputs.planValue }}
+          X_PLAIN_VALUE: ${{ needs.prep_run_test.outputs.plainValue }}
           X_ANOTHER_SECRET: ${{ needs.prep_run_test.outputs.anotherSecret }}
           X_SOMETHING_SECRET: ${{ needs.prep_run_test.outputs.somethingSecret }}
 
