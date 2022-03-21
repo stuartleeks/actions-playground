@@ -78,7 +78,7 @@ jobs:
           
           echo "running..."
 
-          if [[ -z ${TEST1_INPUT} && -z ${TEST1_SECRET}]]; then
+          if [[ -z ${TEST1_INPUT} && -z ${TEST1_SECRET} ]]; then
             echo "Must set one of TEST1_INPUT or TEST1_SECRET"
             exit 1
           fi
