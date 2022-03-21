@@ -9,6 +9,7 @@ on:
       prRef:
         description: The git ref to checkout
         type: string
+        required: false
       test1:
         description: testing params and conditions
         type: string
@@ -51,7 +52,10 @@ jobs:
         run: |
           set -e
 
-          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
+          echo "SOMETHING_SECRET: $SOMETHING_SECRET"
+          echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+          echo "ANOTHER_SECRET: $ANOTHER_SECRET"
+          echo "Dubious manipulation to get another secret.... ${ANOTHER_SECRET:0:1} ${ANOTHER_SECRET:1:100}"
           echo
 
           echo
@@ -61,6 +65,7 @@ jobs:
           echo "Sleeping to simulate work..."
           sleep 60s
         env:
+          ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           # PR_REPO: ${{ inputs.prRepo }}
           PR_REF: ${{ inputs.prRef }}

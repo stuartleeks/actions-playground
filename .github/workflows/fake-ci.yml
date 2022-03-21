@@ -48,6 +48,23 @@ jobs:
       - name: Fake building...
         run: |
           echo Hello there!
+          echo "SOMETHING_SECRET: $SOMETHING_SECRET"
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+          echo "ANOTHER_SECRET: $ANOTHER_SECRET"
+          echo "Dubious manipulation to get another secret.... ${ANOTHER_SECRET:0:1} ${ANOTHER_SECRET:1:100}"
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+          ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
+
+
+  run_test:
+    name: Run deploy via workflow_call
+    uses: ./.github/workflows/fake-extended-3.yml
+    with:
+      prRef: "refs/pull/${{ github.event.issue.number }}/merge"
+      test1: ${{ secrets.ANOTHER_SECRET }}
+      # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
+      # # prRef: ${{ needs.pr_commented.outputs.prRef }}
+      # # prRepo: ${{ needs.pr_commented.outputs.prRepo }}
+    secrets:
+      SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}

@@ -214,6 +214,7 @@ jobs:
           git status
           echo "-------------------------------------"
           git rev-parse --abbrev-ref HEAD
+
       - uses: dorny/paths-filter@v2
         id: filter
         if: |
@@ -226,6 +227,10 @@ jobs:
             not-md:
               # we need to check for changes in files other than *.md
               - '**/!(*.md)'
+
+      - name: Path filter result
+        run: |
+          echo "not-md: ${{ steps.filter.outputs.not-md}}"
 
       - name: Comment with link to run
         if: ${{ steps.check_command.outputs.result == 'run-tests' }}
