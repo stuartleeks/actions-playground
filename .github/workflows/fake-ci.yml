@@ -82,7 +82,7 @@ jobs:
 
   debug:
     needs: [prep_run_test]
-    name: Run deploy via workflow_call
+    name: Debug
     runs-on: ubuntu-latest
     steps:
       - name: Output
