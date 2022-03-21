@@ -79,6 +79,18 @@ jobs:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
 
+      - name: Output
+        run: |
+          echo "X_PLAIN_VALUE: $X_PLAIN_VALUE"
+          echo "Dubious manipulation to get a secret.... ${X_PLAIN_VALUE:0:1} ${X_PLAIN_VALUE:1:100}"
+          echo "X_SOMETHING_SECRET: $X_SOMETHING_SECRET"
+          echo "Dubious manipulation to get a secret.... ${X_SOMETHING_SECRET:0:1} ${X_SOMETHING_SECRET:1:100}"
+          echo "X_ANOTHER_SECRET: $X_ANOTHER_SECRET"
+          echo "Dubious manipulation to get another secret.... ${X_ANOTHER_SECRET:0:1} ${X_ANOTHER_SECRET:1:100}"
+        env:
+          X_PLAIN_VALUE: ${{ steps.set_outputs.outputs.planValue }}
+          X_ANOTHER_SECRET: ${{ steps.set_outputs.outputs.anotherSecret }}
+          X_SOMETHING_SECRET: ${{ steps.set_outputs.outputs.somethingSecret }}
 
   debug:
     needs: [prep_run_test]
