@@ -54,8 +54,8 @@ jobs:
 
           echo "SOMETHING_SECRET: $SOMETHING_SECRET"
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
-          echo "ANOTHER_SECRET: $ANOTHER_SECRET"
-          echo "Dubious manipulation to get another secret.... ${ANOTHER_SECRET:0:1} ${ANOTHER_SECRET:1:100}"
+          echo "TEST1: $TEST1"
+          echo "Dubious manipulation to get another secret.... ${TEST1:0:1} ${TEST1:1:100}"
           echo
 
           echo
@@ -65,7 +65,8 @@ jobs:
           # echo "Sleeping to simulate work..."
           # sleep 60s
         env:
-          ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
+          # test1 has a secret from the repo for main branch build
+          TEST1: ${{ inputs.test1 }}
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           # PR_REPO: ${{ inputs.prRepo }}
           PR_REF: ${{ inputs.prRef }}
