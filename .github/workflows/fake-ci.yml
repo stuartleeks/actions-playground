@@ -116,6 +116,7 @@ jobs:
     needs: [prep_run_test]
     name: Run deploy via workflow_call
     uses: ./.github/workflows/fake-extended-3.yml
+    environment: test1
     with:
       test1: SOMETHING_THAT_IS_NOT_A_SECRET
       # test1: ${{ needs.prep_run_test.outputs.anotherSecret }}
