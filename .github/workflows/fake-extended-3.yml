@@ -78,16 +78,14 @@ jobs:
           
           echo "running..."
 
-          echo "::set-output name=test1::${TEST1:-$TEST1_DEFAULT}"
-          echo "::set-output name=test2::${TEST2:-$TEST2_DEFAULT}"
+          echo "::set-output name=test1::${TEST1_INPUT:-$TEST1_SECRET}"
+          echo "::set-output name=test2::${TEST2_INPUT:-$TEST2_SECRET}"
           echo "done."
         env:
-          TEST1: ${{ inputs.test1 }}
-          TEST1_DEFAULT:  ${{ secrets.test1 }}
-          TEST2: ${{ inputs.test2 }}
-          TEST2_DEFAULT:  ${{ secrets.test2 }}
-
-
+          TEST1_INPUT: ${{ inputs.test1 }}
+          TEST1_SECRET:  ${{ secrets.test1 }}
+          TEST2_INPUT: ${{ inputs.test2 }}
+          TEST2_SECRET:  ${{ secrets.test2 }}
 
       - name: Fake extended tasks
         run: |
