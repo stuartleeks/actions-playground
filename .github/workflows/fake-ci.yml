@@ -117,7 +117,8 @@ jobs:
     name: Run deploy via workflow_call
     uses: ./.github/workflows/fake-extended-3.yml
     with:
-      test1: ${{ needs.prep_run_test.outputs.anotherSecret }}
+      test1: SOMETHING_THAT_IS_NOT_A_SECRET
+      # test1: ${{ needs.prep_run_test.outputs.anotherSecret }}
       # test1: ${{ secrets.ANOTHER_SECRET }}
       # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
       # # prRef: ${{ needs.pr_commented.outputs.prRef }}
