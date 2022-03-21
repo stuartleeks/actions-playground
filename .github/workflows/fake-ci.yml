@@ -116,7 +116,8 @@ jobs:
     needs: [prep_run_test]
     name: Run deploy via workflow_call
     uses: ./.github/workflows/fake-extended-3.yml
-    environment: test1
+    # GH doesn't like this!
+    # environment: test1
     with:
       test1: SOMETHING_THAT_IS_NOT_A_SECRET
       # test1: ${{ needs.prep_run_test.outputs.anotherSecret }}
@@ -125,4 +126,5 @@ jobs:
       # # prRef: ${{ needs.pr_commented.outputs.prRef }}
       # # prRepo: ${{ needs.pr_commented.outputs.prRepo }}
     secrets:
+      test2: ${{ secrets.ANOTHER_SECRET }}
       SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}

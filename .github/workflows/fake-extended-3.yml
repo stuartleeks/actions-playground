@@ -21,6 +21,12 @@ on:
     secrets:
       SOMETHING_SECRET:
         required: true
+      test1:
+        description: pass secret value here
+        required: false
+      test2:
+        description: pass secret value here
+        required: false
 
 jobs:
   build:
@@ -77,9 +83,9 @@ jobs:
           echo "done."
         env:
           TEST1: ${{ inputs.test1 }}
-          TEST1_DEFAULT:  ${{ secrets.ANOTHER_SECRET }}
+          TEST1_DEFAULT:  ${{ secrets.test1 }}
           TEST2: ${{ inputs.test2 }}
-          TEST2_DEFAULT:  ${{ secrets.ANOTHER_SECRET }}
+          TEST2_DEFAULT:  ${{ secrets.test2 }}
 
 
 
