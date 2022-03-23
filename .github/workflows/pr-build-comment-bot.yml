@@ -155,6 +155,12 @@ jobs:
 
           echo "${PR_NUMBER}" > pr_number.txt
 
+      - name: potentialMergeCommit info
+        env:
+        run: |
+          git show --no-patch --no-notes --pretty='%aD' ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
+          git show --no-patch --no-notes --pretty='%cD' ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
+
       - uses: actions/upload-artifact@v3
         name: Add pr_number artifact
         with:
