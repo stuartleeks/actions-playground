@@ -25,6 +25,11 @@ jobs:
       potentialMergeCommit: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
       not-md: ${{ steps.filter.outputs.not-md }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
       - id: check_command
         name: Check for a command using GitHub script
         uses: actions/github-script@v6
