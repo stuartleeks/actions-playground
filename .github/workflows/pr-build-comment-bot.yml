@@ -39,9 +39,15 @@ jobs:
           result-encoding: string
           script: |
             const script = require('./.github/workflows/check_command.js')
-            const result = script.getCommand({context});
+            const result = script.getCommand({core, context});
             console.log(result);
             return result;
+
+      - name: Check Command output
+        run: |
+          echo "hi"
+          echo "testOutput1: ${{ steps.check_command.outputs.testOutput1 }}"
+          echo "testOutput2: ${{ steps.check_command.outputs.testOutput2 }}"
 
       - name: Show result
         env:

@@ -1,4 +1,4 @@
-function getCommand({ context }) {
+function getCommand({ context, core }) {
 	console.log(context);
 	console.log("==========================================================================================")
 	console.log(context.payload);
@@ -35,6 +35,9 @@ function getCommand({ context }) {
 
 	const commentBody = context.payload.comment.body;
 	const commentFirstLine = commentBody.split("\n")[0];
+
+	core.setOutput("testOutput1", false);
+	core.setOutput("testOutput2", "Hello!");
 
 	switch (commentFirstLine.trim()) {
 		case "/test":
