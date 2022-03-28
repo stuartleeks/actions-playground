@@ -49,6 +49,11 @@ jobs:
           echo "testOutput1: ${{ steps.check_command.outputs.testOutput1 }}"
           echo "testOutput2: ${{ steps.check_command.outputs.testOutput2 }}"
 
+      - name: Check Command output
+        if: ${{ steps.check_command.outputs.testOutput1 }}
+        run: |
+          echo "hi - testing whether the output is a boolean!"
+
       - name: Show result
         env:
           RUN_SOMETHING: ${{ steps.check_command.outputs.runSomething }}
