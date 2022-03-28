@@ -33,7 +33,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const script = require('./check_command.js')
+            const script = require('./.github/workflows/check_command.js')
             const result = script({context});
             console.log(result);
             return result;
