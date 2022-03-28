@@ -39,7 +39,7 @@ jobs:
           result-encoding: string
           script: |
             const script = require('./.github/workflows/check_command.js')
-            const result = script({context});
+            const result = script.getCommand({context});
             console.log(result);
             return result;
 

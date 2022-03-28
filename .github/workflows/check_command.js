@@ -1,4 +1,4 @@
-module.exports = ({context}) => {
+function getCommand({ context }) {
 	console.log(context);
 	console.log("==========================================================================================")
 	console.log(context.payload);
@@ -47,4 +47,8 @@ module.exports = ({context}) => {
 			console.log("in default")
 			return "none";
 	}
+}
+
+module.exports = {
+	getCommand
 }
