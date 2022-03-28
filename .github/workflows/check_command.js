@@ -1,4 +1,4 @@
-modules.exports = ({context}) => {
+module.exports = ({context}) => {
 	console.log(context);
 	console.log("==========================================================================================")
 	console.log(context.payload);
