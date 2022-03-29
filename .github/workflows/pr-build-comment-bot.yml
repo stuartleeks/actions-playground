@@ -38,7 +38,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const script = require('./.github/workflows/check_commandx.js')
+            const script = require('./.github/workflows/check_command.js')
             const result = await script.getCommand({core, context});
             console.log(result);
             return result;
