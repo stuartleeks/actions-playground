@@ -1,4 +1,4 @@
-async function getCommand({ context, core }) {
+async function getCommand({ context, core , github}) {
 	console.log(context);
 	console.log("==========================================================================================")
 	console.log(context.payload);
