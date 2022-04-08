@@ -34,6 +34,9 @@ async function getCommand({ context, core, github }) {
 	console.log(`prRefId: ${prRefId}`);
 	core.setOutput("prRefId", prRefId);
 
+	const potentialMergeCommit = pr.merge_commit_sha;
+	console.log(`potentialMergeCommit: ${potentialMergeCommit}`);
+	core.setOutput("potentialMergeCommit", potentialMergeCommit);
 
 	switch (commentFirstLine.trim()) {
 		case "/test":

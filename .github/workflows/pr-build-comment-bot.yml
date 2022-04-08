@@ -92,6 +92,11 @@ jobs:
           echo "using refid of: ${REFID} for GitHub Ref: ${github_pr_ref} (RG base name)"
           echo "::set-output name=refid::${REFID}"
 
+          # Get the prMergeCommit as this is what the pull_request trigger would build
+          prMergeRef=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json potentialMergeCommit | jq -r .potentialMergeCommit.oid)
+          echo -e "\tprMergeRef: $prMergeRef"
+          echo
+
       - name: Show Help
         if: ${{ steps.check_command.outputs.result == 'show-help' }}
         env:
