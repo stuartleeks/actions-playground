@@ -82,6 +82,7 @@ jobs:
 
       - name: Get ref
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
         run: |
           # REFID is the basis for the TRE_ID for the PR
