@@ -34,12 +34,16 @@ async function getCommand({ context, core, github }) {
 	console.log(`prRefId: ${prRefId}`);
 	core.setOutput("prRefId", prRefId);
 
+	const branchRefId = getRefIdForBranch(pr.head.ref);
+	console.log(`branchRefId: ${branchRefId}`);
+
 	const potentialMergeCommit = pr.merge_commit_sha;
 	console.log(`potentialMergeCommit: ${potentialMergeCommit}`);
 	core.setOutput("potentialMergeCommit", potentialMergeCommit);
 
 	const prHeadSha = pr.head.sha;;
 	console.log(`prHeadSha: ${prHeadSha}`);
+
 
 	switch (commentFirstLine.trim()) {
 		case "/test":
@@ -84,6 +88,10 @@ async function userHasWriteAccessToRepo({ github }, username, repoOwner, repoNam
 function getRefIdForPr(prNumber) {
 	// Determine newline is for compatibility with previous bash SHA calculation
 	return createShortHash(`refs/pull/${prNumber}/merge\n`);
+}
+function getRefIdForBranch(branchName) {
+	// Determine newline is for compatibility with previous bash SHA calculation
+	return createShortHash(`refs/heads/${PR_NUMBER}/merge\n`);
 }
 function createShortHash(ref) {
 	const hash = createHash('sha1').update(ref, 'utf8').digest('hex')
