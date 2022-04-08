@@ -119,9 +119,6 @@ jobs:
           fi
           echo "::set-output name=branchRefid::${BRANCH_REFID}"
 
-          github_branch_ref="refs/heads/${PR_NUMBER}/merge"
-          BRANCH_REFID=$(echo)
-
       - name: Show Help
         if: ${{ steps.check_command.outputs.result == 'show-help' }}
         env:

@@ -91,7 +91,7 @@ function getRefIdForPr(prNumber) {
 }
 function getRefIdForBranch(branchName) {
 	// Determine newline is for compatibility with previous bash SHA calculation
-	return createShortHash(`refs/heads/${PR_NUMBER}/merge\n`);
+	return createShortHash(`refs/heads/${branchName}\n`);
 }
 function createShortHash(ref) {
 	const hash = createHash('sha1').update(ref, 'utf8').digest('hex')
