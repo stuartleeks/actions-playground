@@ -53,11 +53,12 @@ async function getCommand({ context, core, github }) {
 	});
 
 
-	const prFiles = await github.paginate(github.rest.pulls.listFiles, {
+	const prFilesResponse = await github.paginate(github.rest.pulls.listFiles, {
 		owner: repoOwner,
 		repo: repoName,
 		pull_number: prNumber
 	});
+	const prFiles = prFilesResponse.data.map(file => file.filename);
 	console.log("==========================================================================================");
 	console.log(prFiles);
 	console.log("==========================================================================================");
