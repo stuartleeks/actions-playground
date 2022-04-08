@@ -25,17 +25,14 @@ async function getCommand({ context, core, github }) {
 	core.setOutput("testOutput2", "Hello!");
 
 	const prNumber = context.payload.issue.number;
-	const pr = await github.rest.pulls.get({owner: repoOwner, repo: repoName, pull_number: prNumber});
+	const pr = await github.rest.pulls.get({ owner: repoOwner, repo: repoName, pull_number: prNumber });
 	console.log("==========================================================================================")
 	console.log(pr);
 	console.log("==========================================================================================")
 
-	const prRef=`refs/pull/${prNumber}/merge\n`; // newline is for compatibility with bash SHA calculation
-	const prRefId = createHash('sha1').update(prRef, 'utf8').digest('hex');
+	const prRefId = getRefIdForPr(prNumber);
 	console.log(`prRefId: ${prRefId}`);
-	
-
-	const hash = createHash('sha1').update('testing\n').digest('hex');
+	core.setOutput("prRefId", prRefId);
 
 
 	switch (commentFirstLine.trim()) {
@@ -76,6 +73,15 @@ async function userHasWriteAccessToRepo({ github }, username, repoOwner, repoNam
 	}
 	console.log("User has write access: " + userHasWriteAccess);
 	return userHasWriteAccess
+}
+
+function getRefIdForPr(prNumber) {
+	// Determine newline is for compatibility with previous bash SHA calculation
+	return createShortHash(`refs/pull/${prNumber}/merge\n`);
+}
+function createShortHash(ref) {
+	const hash = createHash('sha1').update(ref, 'utf8').digest('hex')
+	return hash.substring(0, 8);
 }
 
 module.exports = {

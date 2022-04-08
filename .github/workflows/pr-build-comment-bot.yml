@@ -48,6 +48,7 @@ jobs:
           echo "hi"
           echo "testOutput1: ${{ steps.check_command.outputs.testOutput1 }}"
           echo "testOutput2: ${{ steps.check_command.outputs.testOutput2 }}"
+          echo "prRefId: ${{ steps.check_command.outputs.prRefId }}"
 
       - name: Check Command output
         if: ${{ steps.check_command.outputs.testOutput1 }}
