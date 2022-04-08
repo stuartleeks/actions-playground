@@ -1,4 +1,6 @@
-async function getCommand({ context, core , github}) {
+const { createHash } = require('crypto');
+
+async function getCommand({ context, core, github }) {
 	console.log(context);
 	console.log("==========================================================================================")
 	console.log(context.payload);
@@ -21,6 +23,20 @@ async function getCommand({ context, core , github}) {
 
 	core.setOutput("testOutput1", false);
 	core.setOutput("testOutput2", "Hello!");
+
+	const prNumber = context.payload.issue.number;
+	const pr = await github.rest.pulls.get({owner: repoOwner, repo: repoName, pull_number: prNumber});
+	console.log("==========================================================================================")
+	console.log(pr);
+	console.log("==========================================================================================")
+
+	const prRef=`refs/pull/${prNumber}/merge\n`; // newline is for compatibility with bash SHA calculation
+	const prRefId = createHash('sha1').update(prRef, 'utf8').digest('hex');
+	console.log(`prRefId: ${prRefId}`);
+	
+
+	const hash = createHash('sha1').update('testing\n').digest('hex');
+
 
 	switch (commentFirstLine.trim()) {
 		case "/test":

@@ -79,6 +79,17 @@ jobs:
           echo "env var: ${RUN_SOMETHING}"
           echo "output: ${{ steps.calcs.outputs.runSomething }}"
 
+      - name: Get ref
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          # REFID is the basis for the TRE_ID for the PR
+          github_pr_ref="refs/pull/${PR_NUMBER}/merge"
+          echo "::set-output name=ciGitRef::${github_pr_ref}"
+
+          REFID=$(echo "${github_pr_ref}" | shasum | cut -c1-8)
+          echo "using refid of: ${REFID} for GitHub Ref: ${github_pr_ref} (RG base name)"
+          echo "::set-output name=refid::${REFID}"
 
       - name: Show Help
         if: ${{ steps.check_command.outputs.result == 'show-help' }}
