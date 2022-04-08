@@ -34,6 +34,7 @@ async function getCommand({ context, core, github }) {
 	console.log(`prRefId: ${prRefId}`);
 	core.setOutput("prRefId", prRefId);
 
+	console.log(`Using head ref: ${pr.head.ref}`)
 	const branchRefId = getRefIdForBranch(pr.head.ref);
 	console.log(`branchRefId: ${branchRefId}`);
 
@@ -44,6 +45,12 @@ async function getCommand({ context, core, github }) {
 	const prHeadSha = pr.head.sha;;
 	console.log(`prHeadSha: ${prHeadSha}`);
 
+	github.rest.issues.createComment({
+		owner: repoOwner,
+		repo: repoName,
+		issue_number: prNumber,
+		body: `:robot: Running pr-bot in response to comment by ${commentUsername}\nprHeadSha:\`${prHeadSha}\``
+	});
 
 	switch (commentFirstLine.trim()) {
 		case "/test":
