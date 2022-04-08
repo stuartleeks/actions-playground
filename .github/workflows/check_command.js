@@ -58,7 +58,7 @@ async function getCommand({ context, core, github }) {
 		repo: repoName,
 		pull_number: prNumber
 	});
-	const prFiles = prFilesResponse.data.map(file => file.filename);
+	const prFiles = prFilesResponse.map(file => file.filename);
 	console.log("==========================================================================================");
 	console.log(prFiles);
 	console.log("==========================================================================================");
