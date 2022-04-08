@@ -2,9 +2,9 @@ const { createHash } = require('crypto');
 
 async function getCommand({ context, core, github }) {
 	console.log(context);
-	console.log("==========================================================================================")
+	console.log("==========================================================================================");
 	console.log(context.payload);
-	console.log("==========================================================================================")
+	console.log("==========================================================================================");
 
 	const commentUsername = context.payload.comment.user.login;
 	const repoFullName = context.payload.repository.full_name;
@@ -26,9 +26,9 @@ async function getCommand({ context, core, github }) {
 
 	const prNumber = context.payload.issue.number;
 	const pr = (await github.rest.pulls.get({ owner: repoOwner, repo: repoName, pull_number: prNumber })).data;
-	console.log("==========================================================================================")
+	console.log("==========================================================================================");
 	console.log(pr);
-	console.log("==========================================================================================")
+	console.log("==========================================================================================");
 
 	const prRefId = getRefIdForPr(prNumber);
 	console.log(`prRefId: ${prRefId}`);
@@ -51,6 +51,16 @@ async function getCommand({ context, core, github }) {
 		issue_number: prNumber,
 		body: `:robot: Running pr-bot in response to comment by ${commentUsername}\nprHeadSha:\`${prHeadSha}\``
 	});
+
+
+	const prFiles = await github.paginate(github.rest.pulls.listFiles, {
+		owner: repoOwner,
+		repo: repoName,
+		pull_number: prNumber
+	});
+	console.log("==========================================================================================");
+	console.log(prFiles);
+	console.log("==========================================================================================");
 
 	switch (commentFirstLine.trim()) {
 		case "/test":
