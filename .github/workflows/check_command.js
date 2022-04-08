@@ -25,7 +25,7 @@ async function getCommand({ context, core, github }) {
 	core.setOutput("testOutput2", "Hello!");
 
 	const prNumber = context.payload.issue.number;
-	const pr = await github.rest.pulls.get({ owner: repoOwner, repo: repoName, pull_number: prNumber });
+	const pr = (await github.rest.pulls.get({ owner: repoOwner, repo: repoName, pull_number: prNumber })).data;
 	console.log("==========================================================================================")
 	console.log(pr);
 	console.log("==========================================================================================")
@@ -37,6 +37,9 @@ async function getCommand({ context, core, github }) {
 	const potentialMergeCommit = pr.merge_commit_sha;
 	console.log(`potentialMergeCommit: ${potentialMergeCommit}`);
 	core.setOutput("potentialMergeCommit", potentialMergeCommit);
+
+	const prHeadSha = pr.head.sha;;
+	console.log(`prHeadSha: ${prHeadSha}`);
 
 	switch (commentFirstLine.trim()) {
 		case "/test":

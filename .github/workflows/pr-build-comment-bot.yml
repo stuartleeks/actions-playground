@@ -97,6 +97,12 @@ jobs:
           echo -e "\tprMergeRef: $prMergeRef"
           echo
 
+          # Get PR HEAD SHA for checks status
+          echo "Getting PR head SHA"
+          PR_HEAD_SHA=$(gh api "/repos/$REPO/pulls/$PR_NUMBER" --jq .head.sha)
+          echo "PR_HEAD_SHA: ${PR_HEAD_SHA}"
+          echo "::set-output name=prHeadSha::${PR_HEAD_SHA}"
+
       - name: Show Help
         if: ${{ steps.check_command.outputs.result == 'show-help' }}
         env:
