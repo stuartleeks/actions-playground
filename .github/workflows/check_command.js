@@ -63,17 +63,46 @@ async function getCommand({ context, core, github }) {
 	console.log(prFiles);
 	console.log("==========================================================================================");
 
-	switch (commentFirstLine.trim()) {
-		case "/test":
-			console.log("Result: run-tests");
-			return "run-tests";
-		case "/help":
-			console.log("Result: show-help");
-			return "show-help";
-		default:
-			console.log("in default")
-			return "none";
+	const trimmedFirstLine = commentFirstLine.trim();
+	if (trimmedFirstLine[0] === '/') {
+		switch (trimmedFirstLine) {
+			case "/test":
+				console.log("Result: run-tests");
+				return "run-tests";
+			case "/help":
+				console.log("Result: show-help");
+				await showHelp(github, repoOwner, repoName, prNumber);
+				return "show-help";
+			default:
+				console.log("not recognised as a valid command");
+				await showHelp(github, repoOwner, repoName, prNumber, trimmedFirstLine);
+				return "none";
+		}
+	} else {
+		console.log("not a command")
+		return "none";
 	}
+}
+
+async function showHelp(github, repoOwner, repoName, prNumber, invalidCommand) {
+	const leadingContent = invalidCommand ? `\`${invalidCommand}\` is not recognised as a valid command.` : "Hello!";
+
+	const body = `${leadingContent}
+
+You can use the following commands:
+    /test - build, deploy and run smoke tests on a PR
+    /test-extended - build, deploy and run smoke & extended tests on a PR
+    /test-force-approve - force approval of the PR tests (i.e. skip the deployment checks)
+    /test-destroy-env - delete the validation environment for a PR (e.g. to enable testing a deployment from a clean start after previous tests)
+    /help - show this help`;
+
+	github.rest.issues.createComment({
+		owner: repoOwner,
+		repo: repoName,
+		issue_number: prNumber,
+		body: body
+	});
+
 }
 
 
