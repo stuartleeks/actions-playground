@@ -64,7 +64,7 @@ async function getCommand({ context, core, github }) {
 	console.log("==========================================================================================");
 
 	const docsRegexes = [/README\.md/, /\.md$/, /\.txt$/];
-	const gotNonDocChanges = prFiles.some(file => docsRegexes.some(regex => !regex.test(file)));
+	const gotNonDocChanges = prFiles.some(file => docsRegexes.every(regex => !regex.test(file)));
 	console.log(`gotNonDocChanges: ${gotNonDocChanges}`);
 	console.log("==========================================================================================");
 
