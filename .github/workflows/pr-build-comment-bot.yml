@@ -36,7 +36,6 @@ jobs:
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
         with:
-          result-encoding: string
           script: |
             const script = require('./.github/workflows/check_command.js')
             const result = await script.getCommand({core, context, github});
@@ -49,6 +48,8 @@ jobs:
           echo "testOutput1: ${{ steps.check_command.outputs.testOutput1 }}"
           echo "testOutput2: ${{ steps.check_command.outputs.testOutput2 }}"
           echo "prRefId: ${{ steps.check_command.outputs.prRefId }}"
+          echo "result: ${{ steps.check_command.outputs.result }}"
+          echo "command: ${{ steps.check_command.outputs.command }}"
 
       - name: Check Command output
         if: ${{ steps.check_command.outputs.testOutput1 }}

@@ -74,24 +74,31 @@ async function getCommand({ context, core, github }) {
 	console.log("==========================================================================================");
 
 	const trimmedFirstLine = commentFirstLine.trim();
+	var command = "none"
 	if (trimmedFirstLine[0] === '/') {
 		switch (trimmedFirstLine) {
 			case "/test":
 				console.log("Result: run-tests");
-				return "run-tests";
+				command = "run-tests";
+				break;
 			case "/help":
 				console.log("Result: show-help");
 				await showHelp(github, repoOwner, repoName, prNumber);
-				return "none"; // command already handled :-)
+				command = "none"; // command already handled :-)
+				break;
 			default:
 				console.log("not recognised as a valid command");
 				await showHelp(github, repoOwner, repoName, prNumber, trimmedFirstLine);
-				return "none";
+				command = "none";
+				break;
 		}
 	} else {
 		console.log("not a command")
-		return "none";
+		command = "none";
 	}
+	console.log(`command: ${command}`);
+	core.setOutput("command", command);
+	return command;
 }
 
 async function showHelp(github, repoOwner, repoName, prNumber, invalidCommand) {
