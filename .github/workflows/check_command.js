@@ -63,6 +63,11 @@ async function getCommand({ context, core, github }) {
 	console.log(prFiles);
 	console.log("==========================================================================================");
 
+	const docsRegexes = [/README\.md/, /\.md$/, /\.txt$/];
+	const gotNonDocChanges = prFiles.some(file => docsRegexes.some(regex => !regex.test(file)));
+	console.log(`gotNonDocChanges: ${gotNonDocChanges}`);
+	console.log("==========================================================================================");
+
 	const trimmedFirstLine = commentFirstLine.trim();
 	if (trimmedFirstLine[0] === '/') {
 		switch (trimmedFirstLine) {
