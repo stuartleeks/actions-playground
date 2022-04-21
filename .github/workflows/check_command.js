@@ -54,7 +54,7 @@ async function getCommand({ context, core, github }) {
 		owner: repoOwner,
 		repo: repoName,
 		issue_number: prNumber,
-		body: `:robot: Running pr-bot in response to comment by ${commentUsername}\nprHeadSha:\`${prHeadSha}\``
+		body: `:robot: Running pr-bot in response to comment by @${commentUsername}\nprHeadSha:\`${prHeadSha}\``
 	});
 
 
