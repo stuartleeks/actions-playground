@@ -19,7 +19,7 @@ jobs:
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
     runs-on: ubuntu-latest
     outputs:
-      command: ${{ steps.check_command.outputs.result }}
+      command: ${{ steps.check_command.outputs.command }}
       prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
       prRef: ${{ steps.get_pr_details.outputs.prRef }}
       potentialMergeCommit: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
@@ -121,7 +121,7 @@ jobs:
           echo "::set-output name=branchRefid::${BRANCH_REFID}"
 
       - name: Show Help
-        if: ${{ steps.check_command.outputs.result == 'show-help' }}
+        if: ${{ steps.check_command.outputs.command == 'show-help' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
@@ -134,7 +134,7 @@ jobs:
 
       - id: get_pr_details
         name: Get PR details
-        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
+        if: ${{ steps.check_command.outputs.command == 'run-tests' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
@@ -180,8 +180,8 @@ jobs:
 
       - name: Checkout
         if: |
-          ${{ steps.check_command.outputs.result == 'run-tests'
-              || steps.check_command.outputs.result == 'force-approve' }}
+          ${{ steps.check_command.outputs.command == 'run-tests'
+              || steps.check_command.outputs.command == 'force-approve' }}
         uses: actions/checkout@v2
         with:
           # repository: ${{ steps.get_pr_details.outputs.prRepo }}
@@ -235,8 +235,8 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         if: |
-          ${{ steps.check_command.outputs.result == 'run-tests' 
-          || steps.check_command.outputs.result == 'force-approve' }}
+          ${{ steps.check_command.outputs.command == 'run-tests' 
+          || steps.check_command.outputs.command == 'force-approve' }}
         with:
           base: main
           ref: ${{ steps.get_pr_details.outputs.prRef }}
@@ -250,7 +250,7 @@ jobs:
           echo "not-md: ${{ steps.filter.outputs.not-md}}"
 
       - name: Comment with link to run
-        if: ${{ steps.check_command.outputs.result == 'run-tests' }}
+        if: ${{ steps.check_command.outputs.command == 'run-tests' }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           REPO: ${{ github.event.repository.full_name }}
