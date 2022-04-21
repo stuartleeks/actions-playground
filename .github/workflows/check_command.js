@@ -18,6 +18,11 @@ async function getCommand({ context, core, github }) {
 		return "none";
 	}
 
+	core.debug('Test debug');
+	core.info('Test info');
+	core.warning('Test warning');
+	core.notice('Test notice');
+
 	const commentBody = context.payload.comment.body;
 	const commentFirstLine = commentBody.split("\n")[0];
 
