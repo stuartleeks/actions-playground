@@ -9,31 +9,111 @@ on:
       prRef:
         description: The git ref to checkout
         type: string
+        required: false
+      test1:
+        description: testing params and conditions
+        type: string
+        required: false
+      test2:
+        description: testing params and conditions
+        type: string
+        required: false
     secrets:
       SOMETHING_SECRET:
         required: true
+      test1:
+        description: pass secret value here
+        required: false
+      test2:
+        description: pass secret value here
+        required: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    environment: test1
     steps:
       - uses: actions/checkout@v2
         with:
           # repository: ${{ inputs.prRepo }}
           ref: ${{ inputs.prRef }}
 
+      - name: More output
+        run: |
+          echo
+          echo "git SHA:    $(git rev-parse --abbrev-ref HEAD)"
+          echo "git ref:    $(git rev-parse HEAD)"
+          echo "github ref: ${GITHUB_REF}"
+
+      - name: Test1
+        if: ${{ inputs.test1 != '' }}
+        run: |
+          echo "Test1!"
+      - name: Test2
+        if: ${{ inputs.test2 == '' }}
+        run: |
+          echo "Not Test2!"
+
+      - name: Set values
+        id: set_values
+        run: |
+          # We want to be able to use the environment secret for TRE_ID when running against main
+          # and the PR value when running a PR
+          #
+          # For main builds, the values coming from repo/environment secrets means that they 
+          # will be masked in the output
+          # For PR builds, it is helpful if these values are not masked, which is why the values
+          # were moved from secrets to inputs
+          #
+          # However, the following error occurrs when attempting to pass secrets as  inputs:
+          #     "Unrecognized named-value: 'secrets'"
+          #
+          # As a way round this, the values manipulated in this step are allowed to be omitted
+          # when invoking this workflow and are defaulted to the environment secrets if missing.
+          #
+          # This way, the main build can omit the values and PR builds can supply them
+          # Future steps in this workflow can then use the outputs from this step and will
+          # get the correct values
+          
+          
+          echo "running..."
+
+          if [[ -z ${TEST1_INPUT} && -z ${TEST1_SECRET} ]]; then
+            echo "Must set one of TEST1_INPUT or TEST1_SECRET"
+            exit 1
+          fi
+
+          echo "::set-output name=test1::${TEST1_INPUT:-$TEST1_SECRET}"
+          echo "::set-output name=test2::${TEST2_INPUT:-$TEST2_SECRET}"
+          echo "done."
+        env:
+          TEST1_INPUT: ${{ inputs.test1 }}
+          TEST1_SECRET:  ${{ secrets.test1 }}
+          TEST2_INPUT: ${{ inputs.test2 }}
+          TEST2_SECRET:  ${{ secrets.test2 }}
+
       - name: Fake extended tasks
         run: |
           set -e
 
-          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
+          # echo "SOMETHING_SECRET: $SOMETHING_SECRET"
+          # echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+          echo "TEST1: $TEST1"
+          echo "Dubious manipulation to value.... ${TEST1:0:1} ${TEST1:1:100}"
+          echo "TEST2: $TEST2"
+          echo "Dubious manipulation to value.... ${TEST2:0:1} ${TEST2:1:100}"
           echo
 
           echo
           echo "Pretend that we're doing something more here - show output.txt for PR context :-)"
           cat "output.txt"
+
+          # echo "Sleeping to simulate work..."
+          # sleep 60s
         env:
-          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
-          # PR_REPO: ${{ inputs.prRepo }}
-          PR_REF: ${{ inputs.prRef }}
+          # test1 has a secret from the repo for main branch build
+          TEST1: ${{ steps.set_values.outputs.test1 }}
+          TEST2: ${{ steps.set_values.outputs.test2 }}
+          # SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+          # # PR_REPO: ${{ inputs.prRepo }}
+          # PR_REF: ${{ inputs.prRef }}

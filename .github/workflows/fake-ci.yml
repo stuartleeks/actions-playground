@@ -48,6 +48,83 @@ jobs:
       - name: Fake building...
         run: |
           echo Hello there!
+          echo "SOMETHING_SECRET: $SOMETHING_SECRET"
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
+          echo "ANOTHER_SECRET: $ANOTHER_SECRET"
+          echo "Dubious manipulation to get another secret.... ${ANOTHER_SECRET:0:1} ${ANOTHER_SECRET:1:100}"
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+          ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
+
+  prep_run_test:
+    name: Prepare inputs for run_test
+    # workflow call doesn't seem to handle passing secrets in the `with` section
+    # so set them as outputs here and use the outputs to pass the values
+    runs-on: ubuntu-latest
+    outputs:
+      plainValue: ${{ steps.set_outputs.outputs.plainValue }}
+      anotherSecret: ${{ steps.set_outputs.outputs.anotherSecret }}
+      somethingSecret: ${{ steps.set_outputs.outputs.somethingSecret }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set outputs
+        id: set_outputs
+        run: |
+          echo "running..."
+          echo "::set-output name=plainValue::PLAIN_VALUE_HERE"
+          echo "::set-output name=anotherSecret::${ANOTHER_SECRET}"
+          echo "::set-output name=somethingSecret::${SOMETHING_SECRET}"
+          echo "done."
+        env:
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
+          ANOTHER_SECRET: ${{ secrets.ANOTHER_SECRET }}
+
+      - name: Show output
+        run: |
+          echo "X_PLAIN_VALUE: $X_PLAIN_VALUE"
+          echo "Dubious manipulation to get a secret.... ${X_PLAIN_VALUE:0:1} ${X_PLAIN_VALUE:1:100}"
+          echo "X_SOMETHING_SECRET: $X_SOMETHING_SECRET"
+          echo "Dubious manipulation to get a secret.... ${X_SOMETHING_SECRET:0:1} ${X_SOMETHING_SECRET:1:100}"
+          echo "X_ANOTHER_SECRET: $X_ANOTHER_SECRET"
+          echo "Dubious manipulation to get another secret.... ${X_ANOTHER_SECRET:0:1} ${X_ANOTHER_SECRET:1:100}"
+        env:
+          X_PLAIN_VALUE: ${{ steps.set_outputs.outputs.plainValue }}
+          X_ANOTHER_SECRET: ${{ steps.set_outputs.outputs.anotherSecret }}
+          X_SOMETHING_SECRET: ${{ steps.set_outputs.outputs.somethingSecret }}
+
+  debug:
+    needs: [prep_run_test]
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output
+        run: |
+          echo "X_PLAIN_VALUE: $X_PLAIN_VALUE"
+          echo "Dubious manipulation to get a secret.... ${X_PLAIN_VALUE:0:1} ${X_PLAIN_VALUE:1:100}"
+          echo "X_SOMETHING_SECRET: $X_SOMETHING_SECRET"
+          echo "Dubious manipulation to get a secret.... ${X_SOMETHING_SECRET:0:1} ${X_SOMETHING_SECRET:1:100}"
+          echo "X_ANOTHER_SECRET: $X_ANOTHER_SECRET"
+          echo "Dubious manipulation to get another secret.... ${X_ANOTHER_SECRET:0:1} ${X_ANOTHER_SECRET:1:100}"
+        env:
+          X_PLAIN_VALUE: ${{ needs.prep_run_test.outputs.plainValue }}
+          X_ANOTHER_SECRET: ${{ needs.prep_run_test.outputs.anotherSecret }}
+          X_SOMETHING_SECRET: ${{ needs.prep_run_test.outputs.somethingSecret }}
+
+  run_test:
+    needs: [prep_run_test]
+    name: Run deploy via workflow_call
+    uses: ./.github/workflows/fake-extended-3.yml
+    # GH doesn't like this!
+    # environment: test1
+    with:
+      test1: SOMETHING_THAT_IS_NOT_A_SECRET
+      # test1: ${{ needs.prep_run_test.outputs.anotherSecret }}
+      # test1: ${{ secrets.ANOTHER_SECRET }}
+      # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
+      # # prRef: ${{ needs.pr_commented.outputs.prRef }}
+      # # prRepo: ${{ needs.pr_commented.outputs.prRepo }}
+    secrets:
+      test2: ${{ secrets.ANOTHER_SECRET }}
+      SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
