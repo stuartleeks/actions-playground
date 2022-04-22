@@ -38,9 +38,8 @@ jobs:
         with:
           script: |
             const script = require('./.github/workflows/check_command.js')
-            const result = await script.getCommand({core, context, github});
-            console.log(result);
-            return result;
+            await script.getCommandFromComment({core, context, github});
+            
 
       - name: Check Command output
         run: |
