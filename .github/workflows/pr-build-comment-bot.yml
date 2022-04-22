@@ -20,10 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       command: ${{ steps.check_command.outputs.command }}
-      prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
-      prRef: ${{ steps.get_pr_details.outputs.prRef }}
-      prHeadSha: ${{ steps.get_pr_details.outputs.prHeadSha }}
-      potentialMergeCommit: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
+      prRepo: ${{ steps.check_command.outputs.prRepo }}
+      prRef: ${{ steps.check_command.outputs.prRef }}
+      prHeadSha: ${{ steps.check_command.outputs.prHeadSha }}
+      potentialMergeCommit: ${{ steps.check_command.outputs.potentialMergeCommit }}
       not-md: ${{ steps.filter.outputs.not-md }}
     steps:
       - name: Checkout
