@@ -58,25 +58,6 @@ jobs:
         run: |
           echo "Not Test2!"
 
-      - name: "Run E2E Tests (Smoke)"
-        run: |
-          set -e
-          echo "Fake smoke tests :-)"
-
-      # For PR builds triggered from comment builds, the GITHUB_REF is set to main
-      # so the checks aren't automatically associated with the PR
-      # If prHeadSha is specified then explicity mark the checks for that SHA
-      - name: Report check status
-        if: ${{ inputs.prHeadSha }}
-        uses: LouisBrunner/checks-action@v1.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # the name must be identical to the one received by the real job
-          sha: ${{ inputs.prHeadSha }}
-          name: "Deploy PR / Run E2E Tests (Smoke)"
-          status: "completed"
-          conclusion: "success"
-
       - name: Set values
         id: set_values
         run: |
@@ -140,3 +121,27 @@ jobs:
           # SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
           # # PR_REPO: ${{ inputs.prRepo }}
           # PR_REF: ${{ inputs.prRef }}
+
+  test:
+  build:
+    runs-on: ubuntu-latest
+    environment: test1
+    steps:
+      - name: "Run E2E Tests (Smoke)"
+        run: |
+          set -e
+          echo "Fake smoke tests :-)"
+
+      # For PR builds triggered from comment builds, the GITHUB_REF is set to main
+      # so the checks aren't automatically associated with the PR
+      # If prHeadSha is specified then explicity mark the checks for that SHA
+      - name: Report check status
+        if: ${{ inputs.prHeadSha }}
+        uses: LouisBrunner/checks-action@v1.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # the name must be identical to the one received by the real job
+          sha: ${{ inputs.prHeadSha }}
+          name: "Deploy PR / Run E2E Tests (Smoke)"
+          status: "completed"
+          conclusion: "success"
