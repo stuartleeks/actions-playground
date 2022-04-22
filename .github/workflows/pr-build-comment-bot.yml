@@ -37,7 +37,7 @@ jobs:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
         with:
           script: |
-            const script = require('./.github/workflows/check_command.js')
+            const script = require('./.github/workflows/build.js')
             await script.getCommandFromComment({core, context, github});
             
 
@@ -248,16 +248,16 @@ jobs:
         run: |
           echo "not-md: ${{ steps.filter.outputs.not-md}}"
 
-      - name: Comment with link to run
-        if: ${{ steps.check_command.outputs.command == 'run-tests' }}
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.event.repository.full_name }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUN_ID: ${{ github.run_id }}
-        run: |
-          echo "Showing help on PR ${PR_NUMBER}"
-          gh pr comment ${PR_NUMBER} --repo $REPO --body "Running tests: https://github.com/${REPO}/actions/runs/${RUN_ID}"
+      # - name: Comment with link to run
+      #   if: ${{ steps.check_command.outputs.command == 'run-tests' }}
+      #   env:
+      #     PR_NUMBER: ${{ github.event.issue.number }}
+      #     REPO: ${{ github.event.repository.full_name }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     RUN_ID: ${{ github.run_id }}
+      #   run: |
+      #     echo "Showing help on PR ${PR_NUMBER}"
+      #     gh pr comment ${PR_NUMBER} --repo $REPO --body "Running tests: https://github.com/${REPO}/actions/runs/${RUN_ID}"
 
   debug:
     needs: [pr_commented]
