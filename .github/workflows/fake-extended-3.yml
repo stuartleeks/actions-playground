@@ -54,6 +54,11 @@ jobs:
         run: |
           echo "Not Test2!"
 
+      - name: "Run E2E Tests (Smoke)"
+        run: |
+          set -e
+          echo "Fake smoke tests :-)"
+
       - name: Set values
         id: set_values
         run: |

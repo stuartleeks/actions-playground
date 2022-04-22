@@ -273,7 +273,7 @@ jobs:
   run_test:
     needs: [pr_commented]
     if: ${{ needs.pr_commented.outputs.command == 'run-tests' && needs.pr_commented.outputs.not-md == 'true'}}
-    name: Run deploy
+    name: Deploy PR
     uses: ./.github/workflows/fake-extended-3.yml
     with:
       prRef: "refs/pull/${{ github.event.issue.number }}/merge"
