@@ -23,7 +23,7 @@ async function getCommand({ context, core, github }) {
 	core.warning('Test warning');
 	core.notice('Test notice');
 
-	const commentLink = context.payload.comment.html_link;
+	const commentLink = context.payload.comment.html_url;
 	const commentBody = context.payload.comment.body;
 	const commentFirstLine = commentBody.split("\n")[0];
 
