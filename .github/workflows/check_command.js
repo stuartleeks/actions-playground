@@ -23,6 +23,7 @@ async function getCommand({ context, core, github }) {
 	core.warning('Test warning');
 	core.notice('Test notice');
 
+	const commentLink = context.payload.comment.html_link;
 	const commentBody = context.payload.comment.body;
 	const commentFirstLine = commentBody.split("\n")[0];
 
@@ -54,7 +55,7 @@ async function getCommand({ context, core, github }) {
 		owner: repoOwner,
 		repo: repoName,
 		issue_number: prNumber,
-		body: `:robot: Running pr-bot in response to comment by @${commentUsername}\nprHeadSha:\`${prHeadSha}\``
+		body: `:robot: Running pr-bot in response to [the comment](${commentLink}) by @${commentUsername}\nprHeadSha:\`${prHeadSha}\``
 	});
 
 
