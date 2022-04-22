@@ -121,7 +121,7 @@ You can use the following commands:
 		owner: repoOwner,
 		repo: repoName,
 		issue_number: prNumber,
-		body: body.replace(/ /g, '&nbsp;') // ensure spaces are rendered for formatting :-)
+		body: body,
 	});
 
 }
