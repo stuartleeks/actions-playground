@@ -114,7 +114,7 @@ You can use the following commands:
 &nbsp;&nbsp;&nbsp;&nbsp;/test-destroy-env - delete the validation environment for a PR (e.g. to enable testing a deployment from a clean start after previous tests)
 &nbsp;&nbsp;&nbsp;&nbsp;/help - show this help`;
 
-	github.rest.issues.createComment({
+	await github.rest.issues.createComment({
 		owner: repoOwner,
 		repo: repoName,
 		issue_number: prNumber,
