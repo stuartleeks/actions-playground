@@ -278,6 +278,7 @@ jobs:
     with:
       prRef: "refs/pull/${{ github.event.issue.number }}/merge"
       test1: something
+      prHeadSha: ${{ needs.pr_commented.outputs.prHeadSha }}
       # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}
       # # prRef: ${{ needs.pr_commented.outputs.prRef }}
       # # prRepo: ${{ needs.pr_commented.outputs.prRepo }}
