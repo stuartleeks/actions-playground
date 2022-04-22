@@ -108,11 +108,14 @@ async function showHelp(github, repoOwner, repoName, prNumber, invalidCommand) {
 	const body = `${leadingContent}
 
 You can use the following commands:
-    \`/test\`               - build, deploy and run smoke tests on a PR
-    \`/test-extended\`      - build, deploy and run smoke & extended tests on a PR
-    \`/test-force-approve\` - force approval of the PR tests (i.e. skip the deployment checks)
-    \`/test-destroy-env\`   - delete the validation environment for a PR (e.g. to enable testing a deployment from a clean start after previous tests)
-    \`/help\`               - show this help`;
+
+|command|description|
+|-|-|
+|\`/test\`               | build, deploy and run smoke tests on a PR|
+|\`/test-extended\`      | build, deploy and run smoke & extended tests on a PR|
+|\`/test-force-approve\` | force approval of the PR tests (i.e. skip the deployment checks)|
+|\`/test-destroy-env\`   | delete the validation environment for a PR (e.g. to enable testing a deployment from a clean start after previous tests)|
+|\`/help\`               | show this help|`;
 
 	await github.rest.issues.createComment({
 		owner: repoOwner,
