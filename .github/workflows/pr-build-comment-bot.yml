@@ -48,6 +48,7 @@ jobs:
           echo "testOutput1: ${{ steps.check_command.outputs.testOutput1 }}"
           echo "testOutput2: ${{ steps.check_command.outputs.testOutput2 }}"
           echo "prRefId: ${{ steps.check_command.outputs.prRefId }}"
+          echo "prHeadSha: ${{ steps.check_command.outputs.prHeadSha }}"
           echo "result: ${{ steps.check_command.outputs.result }}"
           echo "command: ${{ steps.check_command.outputs.command }}"
 
