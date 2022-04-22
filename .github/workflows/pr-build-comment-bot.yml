@@ -22,6 +22,7 @@ jobs:
       command: ${{ steps.check_command.outputs.command }}
       prRepo: ${{ steps.get_pr_details.outputs.prRepo }}
       prRef: ${{ steps.get_pr_details.outputs.prRef }}
+      prHeadSha: ${{ steps.get_pr_details.outputs.prHeadSha }}
       potentialMergeCommit: ${{ steps.get_pr_details.outputs.potentialMergeCommit }}
       not-md: ${{ steps.filter.outputs.not-md }}
     steps:
