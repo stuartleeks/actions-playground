@@ -131,6 +131,7 @@ jobs:
         run: |
           set -e
           echo "Fake smoke tests :-)"
+          echo "prHeadSha: ${{ inputs.prHeadSha }}"
 
       # For PR builds triggered from comment builds, the GITHUB_REF is set to main
       # so the checks aren't automatically associated with the PR
