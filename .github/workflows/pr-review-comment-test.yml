@@ -1,0 +1,32 @@
+name: pr_review_comment_test
+
+on:
+  pull_request_review_comment
+  # pull_request_review_comment:
+  #   types: [created]
+
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#issue_comment
+# https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#issue_comment
+
+
+# https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+
+jobs:
+
+  pr_commented:
+    name: PR review comment
+    # https://docs.github.com/en/graphql/reference/enums#commentauthorassociation
+    # (and https://docs.github.com/en/rest/reference/issues#comments)
+    # if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: check_command
+        name: Check for a command using GitHub script
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            console.log(context);
+            console.log("==========================================================================================")
+            console.log(context.payload);
+            console.log("==========================================================================================")

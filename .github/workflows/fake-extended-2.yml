@@ -1,0 +1,35 @@
+name: fake-extended-2
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote:
+        description: Name of the repo GitHub repo containing the ref (as org/repo )
+        required: true
+      prRef:
+        description: The git ref to checkout
+        required: true
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Fake extended tasks
+        run: |
+          set -e
+          git config advice.detachedHead false
+          git remote add fork https://github.com/${{  github.event.inputs.remote }}
+          git remote update
+          git checkout ${{ github.event.inputs.prRef }}
+          echo
+          echo "Pretend that we're doing something more here :-)"
+          cat "output.txt"
+          echo
+          echo "Dubious manipulation to get a secret.... <start>${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}<end>"
+          echo 
+        env:
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
