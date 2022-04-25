@@ -128,6 +128,7 @@ async function handleTestCommand({ core, github }, commandParts, testDescription
   // the latest head SHA for the PR
   const command = commandParts[0]
   const prAuthorHasWriteAccess = await userHasWriteAccessToRepo({ core, github }, pr.authorUsername, pr.repoOwner, pr.repoName);
+  core.info(`PR Author (${pr.authorUsername}) has write accces? ${prAuthorHasWriteAccess}`);
   const externalPr = !prAuthorHasWriteAccess;
   if (externalPr) {
     if (commandParts.length === 1) {
