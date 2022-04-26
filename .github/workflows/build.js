@@ -84,9 +84,31 @@ async function getCommandFromComment({ core, context, github }) {
                         output: undefined,
                         details_url: undefined,
                     });
-                    const message = `:white_check_mark: Runing /foo`;
+                    const message = `:white_check_mark: Runing /foo: ${prHeadSha}`;
                     await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
                     command = "foo";
+                    break;
+                }
+
+            case "/foo2":
+                {
+                    await github.rest.checks.create({
+                        owner: repoOwner,
+                        repo: repoName,
+                        // name: "2-pr-bot test",
+                        name: "Deploy PR / Run E2E Tests (Smoke)",
+                        head_sha: potentialMergeCommit,
+                        status: "completed",
+                        conclusion: "success",
+                        started_at: new Date().toISOString(),
+                        actions: undefined,
+                        completed_at: new Date().toISOString(),
+                        output: undefined,
+                        details_url: undefined,
+                    });
+                    const message = `:white_check_mark: Runing /foo2: ${potentialMergeCommit}`;
+                    await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
+                    command = "foo2";
                     break;
                 }
 
