@@ -77,6 +77,11 @@ async function getCommandFromComment({ core, context, github }) {
                         head_sha: prHeadSha,
                         status: "completed",
                         conclusion: "success",
+                        started_at: new Date().toISOString(),
+                        actions: undefined,
+                        completed_at: new Date().toISOString(),
+                        output: undefined,
+                        details_url: undefined,
                     });
                     break;
                 }
