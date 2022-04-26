@@ -73,7 +73,7 @@ async function getCommandFromComment({ core, context, github }) {
                     await github.rest.checks.create({
                         owner: repoOwner,
                         repo: repoName,
-                        name: "pr-bot test",
+                        name: "1-pr-bot test",
                         head_sha: prHeadSha,
                         status: "completed",
                         conclusion: "success",
@@ -85,6 +85,7 @@ async function getCommandFromComment({ core, context, github }) {
                     });
                     const message = `:white_check_mark: Runing /foo`;
                     await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
+                    command = "foo";
                     break;
                 }
 
