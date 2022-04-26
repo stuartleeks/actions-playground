@@ -68,6 +68,28 @@ async function getCommandFromComment({ core, context, github }) {
         const parts = trimmedFirstLine.split(' ').filter(p => p !== '');
         const commandText = parts[0];
         switch (commandText) {
+            case "/foo":
+                {
+                    await github.rest.checks.create({
+                        owner: repoOwner,
+                        repo: repoName,
+                        // name: "2-pr-bot test",
+                        name: "Deploy PR / Run E2E Tests (Smoke)",
+                        head_sha: prHeadSha,
+                        status: "completed",
+                        conclusion: "success",
+                        started_at: new Date().toISOString(),
+                        actions: undefined,
+                        completed_at: new Date().toISOString(),
+                        output: undefined,
+                        details_url: undefined,
+                    });
+                    const message = `:white_check_mark: Runing /foo`;
+                    await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
+                    command = "foo";
+                    break;
+                }
+
             case "/test":
                 {
                     // Docs only changes don't run tests with secrets so can run regardless of whether
