@@ -68,31 +68,31 @@ jobs:
           echo "env var - test: ${TEST}"
           echo "output: ${{ steps.check_command.outputs.runSomething }}"
 
-      # If we don't run the actual deploy (see the run_test job below) we won't receive a check-run status,
-      # and will have to send it "manually"
-      - name: Bypass E2E check-runs status
-        if: ${{ steps.check_command.outputs.command == 'test-force-approve' }}
-        uses: LouisBrunner/checks-action@v1.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # the name must be identical to the one received by the real job
-          sha: ${{ steps.check_command.outputs.prHeadSha }}
-          name: "Deploy PR / Run E2E Tests (Smoke)"
-          status: "completed"
-          conclusion: "success"
+      # # If we don't run the actual deploy (see the run_test job below) we won't receive a check-run status,
+      # # and will have to send it "manually"
+      # - name: Bypass E2E check-runs status
+      #   if: ${{ steps.check_command.outputs.command == 'test-force-approve' }}
+      #   uses: LouisBrunner/checks-action@v1.1.1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     # the name must be identical to the one received by the real job
+      #     sha: ${{ steps.check_command.outputs.prHeadSha }}
+      #     name: "Deploy PR / Run E2E Tests (Smoke)"
+      #     status: "completed"
+      #     conclusion: "success"
 
-      # If we don't run the actual deploy (see the run_test job below) we won't receive a check-run status,
-      # and will have to send it "manually"
-      - name: Bypass E2E check-runs status
-        if: ${{ steps.check_command.outputs.command == 'foo' }}
-        uses: LouisBrunner/checks-action@v1.1.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          # the name must be identical to the one received by the real job
-          sha: ${{ steps.check_command.outputs.prHeadSha }}
-          name: "2-checks-action test"
-          status: "completed"
-          conclusion: "success"
+      # # If we don't run the actual deploy (see the run_test job below) we won't receive a check-run status,
+      # # and will have to send it "manually"
+      # - name: Bypass E2E check-runs status
+      #   if: ${{ steps.check_command.outputs.command == 'foo' }}
+      #   uses: LouisBrunner/checks-action@v1.1.1
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     # the name must be identical to the one received by the real job
+      #     sha: ${{ steps.check_command.outputs.prHeadSha }}
+      #     name: "2-checks-action test"
+      #     status: "completed"
+      #     conclusion: "success"
 
 
   run_test:

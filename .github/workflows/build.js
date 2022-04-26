@@ -73,7 +73,8 @@ async function getCommandFromComment({ core, context, github }) {
                     await github.rest.checks.create({
                         owner: repoOwner,
                         repo: repoName,
-                        name: "2-pr-bot test",
+                        // name: "2-pr-bot test",
+                        name: "Deploy PR / Run E2E Tests (Smoke)",
                         head_sha: prHeadSha,
                         status: "completed",
                         conclusion: "success",
