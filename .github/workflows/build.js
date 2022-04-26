@@ -83,6 +83,8 @@ async function getCommandFromComment({ core, context, github }) {
                         output: undefined,
                         details_url: undefined,
                     });
+                    const message = `:white_check_mark: Runing /foo`;
+                    await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
                     break;
                 }
 
