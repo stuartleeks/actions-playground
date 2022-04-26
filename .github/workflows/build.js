@@ -65,7 +65,7 @@ async function getCommandFromComment({ core, context, github }) {
     let command = "none";
     const trimmedFirstLine = commentFirstLine.trim();
     if (trimmedFirstLine[0] === "/") {
-        const parts = trimmedFirstLine.split(' ');
+        const parts = trimmedFirstLine.split(' ').filter(p => p !== '');
         const commandText = parts[0];
         switch (commandText) {
             case "/test":
@@ -78,7 +78,7 @@ async function getCommandFromComment({ core, context, github }) {
                         break;
                     }
 
-                    const runTests = await handleTestCommand({ core, github }, parts, "tests", runId, { number: prNumber, authorUsername: prAuthorUsername, repoOwner, repoName, headSha: prHeadSha, refId: prRefId }, { username: commentUsername, link: commentLink });
+                    const runTests = await handleTestCommand({ core, github }, parts, "tests", runId, { number: prNumber, authorUsername: prAuthorUsername, repoOwner, repoName, headSha: prHeadSha, refId: prRefId, details: pr }, { username: commentUsername, link: commentLink });
                     if (runTests) {
                         command = "run-tests";
                     }
@@ -87,7 +87,7 @@ async function getCommandFromComment({ core, context, github }) {
 
             case "/test-extended":
                 {
-                    const runTests = await handleTestCommand({ core, github }, parts, "extended tests", runId, { number: prNumber, authorUsername: prAuthorUsername, repoOwner, repoName, headSha: prHeadSha, refId: prRefId }, { username: commentUsername, link: commentLink });
+                    const runTests = await handleTestCommand({ core, github }, parts, "extended tests", runId, { number: prNumber, authorUsername: prAuthorUsername, repoOwner, repoName, headSha: prHeadSha, refId: prRefId, details: pr }, { username: commentUsername, link: commentLink });
                     if (runTests) {
                         command = "run-tests-extended";
                     }
@@ -123,31 +123,33 @@ async function getCommandFromComment({ core, context, github }) {
 }
 
 async function handleTestCommand({ core, github }, commandParts, testDescription, runId, pr, comment) {
+
+    if (!pr.details.mergeable) {
+        // Since we use the potential merge commit as the ref to checkout, we can only run if there is such a commit
+        // If the PR isn't mergeable, add a comment indicating that the merge issue needs addressing
+        const message = `:warning: Cannot run tests as PR is not mergeable. Ensure that the PR is open and doesn't have any conflicts.`;
+        await addActionComment({ github }, pr.repoOwner, pr.repoName, pr.number, comment.username, comment.link, message);
+        return false;
+    }
+
     // check if this is an external PR (i.e. author not a maintainer)
     // if so, need to specify the SHA that has been vetted and check that it matches
     // the latest head SHA for the PR
     const command = commandParts[0]
     const prAuthorHasWriteAccess = await userHasWriteAccessToRepo({ core, github }, pr.authorUsername, pr.repoOwner, pr.repoName);
-    core.info(`PR Author (${pr.authorUsername}) has write access? ${prAuthorHasWriteAccess}`);
     const externalPr = !prAuthorHasWriteAccess;
-    core.info(`ExternalPR? ${externalPr}`);
     if (externalPr) {
-        core.info(`commandParts.length: ${commandParts.length}`);
         if (commandParts.length === 1) {
             const message = `:warning: When using \`${command}\` on external PRs, the SHA of the checked commit must be specified`;
             await addActionComment({ github }, pr.repoOwner, pr.repoName, pr.number, comment.username, comment.link, message);
             return false;
         }
         const commentSha = commandParts[1];
-        core.info(`commentSha: ${commentSha}`);
-        core.info(`commentSha.length: ${commentSha.length}`);
         if (commentSha.length < 7) {
             const message = `:warning: When specifying a commit SHA it must be at least 7 characters (received \`234567\`)`;
             await addActionComment({ github }, pr.repoOwner, pr.repoName, pr.number, comment.username, comment.link, message);
             return false;
         }
-        core.info(`pr.headSha: ${pr.headSha}`);
-        core.info(`pr.headSha.startsWith(commentSha): ${pr.headSha.startsWith(commentSha)}`);
         if (!pr.headSha.startsWith(commentSha)) {
             const message = `:warning: The specified SHA \`${commentSha}\` is not the latest commit on the PR. Please validate the latest commit and re-run \`/test\``;
             await addActionComment({ github }, pr.repoOwner, pr.repoName, pr.number, comment.username, comment.link, message);
@@ -252,7 +254,7 @@ ${message}
 }
 
 function logAndSetOutput(core, name, value) {
-    core.info(`Setting output '${name}': '${value}'`);
+    core.info(`Setting output '${name}: ${value}`);
     core.setOutput(name, value);
 }
 
