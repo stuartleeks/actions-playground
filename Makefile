@@ -3,3 +3,6 @@ test-workflow:
 	
 test-workflow-watch:
 	(cd .github/workflows/ && yarn test-watch)
+
+include test/Makefile
+
