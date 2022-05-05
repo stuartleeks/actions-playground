@@ -24,7 +24,7 @@ jobs:
       prRef: ${{ steps.check_command.outputs.prRef }}
       prHeadSha: ${{ steps.check_command.outputs.prHeadSha }}
       potentialMergeCommit: ${{ steps.check_command.outputs.potentialMergeCommit }}
-      not-md: ${{ steps.filter.outputs.not-md }}
+      nonDocsChanges: ${{ steps.filter.outputs.nonDocsChanges }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -97,7 +97,7 @@ jobs:
 
   run_test:
     needs: [pr_commented]
-    if: ${{ needs.pr_commented.outputs.command == 'run-tests' && needs.pr_commented.outputs.not-md == 'true'}}
+    if: ${{ needs.pr_commented.outputs.command == 'run-tests' && needs.pr_commented.outputs.nonDocsChanges == 'true'}}
     name: Deploy PR
     uses: ./.github/workflows/fake-extended-3.yml
     with:
