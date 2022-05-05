@@ -84,7 +84,7 @@ async function getCommandFromComment({ core, context, github }) {
                         output: undefined,
                         details_url: undefined,
                     });
-                    const message = `:white_check_mark: Runing /foo: ${prHeadSha}`;
+                    const message = `:white_check_mark: Runing /foo: ${prHeadSha}. https://github.com/${pr.repoOwner}/${pr.repoName}/actions/runs/${runId}`;
                     await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
                     command = "foo";
                     break;
@@ -106,7 +106,7 @@ async function getCommandFromComment({ core, context, github }) {
                         output: undefined,
                         details_url: undefined,
                     });
-                    const message = `:white_check_mark: Runing /foo2: ${potentialMergeCommit}`;
+                    const message = `:white_check_mark: Runing /foo2: ${potentialMergeCommit}. https://github.com/${pr.repoOwner}/${pr.repoName}/actions/runs/${runId}`;
                     await addActionComment({ github }, repoOwner, repoName, prNumber, commentUsername, commentLink, message);
                     command = "foo2";
                     break;
