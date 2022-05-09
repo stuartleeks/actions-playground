@@ -58,7 +58,6 @@ jobs:
 
       - name: More output
         run: |
-          echo "imageName=${{imageName}}
           echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
 
           echo
