@@ -42,12 +42,12 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            if (context.event_name === "push" && context.ref === "refs/head/main") {
+            if (context.eventName === "push" && context.ref === "refs/head/main") {
               console.log("Setting image_name=latest for push to main");
               core.setOutput("image_name", "latest");
               return;
             }
-            if (context.event_name === "pull_request") {
+            if (context.eventName === "pull_request") {
               const prTag = `pr-${context.payload.pull_request.number}`;
               console.log("Setting image_name=latest for push to main");
               core.setOutput("image_name", prTag);
