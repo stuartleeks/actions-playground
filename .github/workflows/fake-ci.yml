@@ -37,17 +37,36 @@ jobs:
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
 
-      - name: Set imageName - main
+      - id: set_image_name
+        name: Set image_name...
+        uses: actions/github-script@v6
+        with:
+          script: |
+            if (context.event_name === "push" && context.ref === "refs/head/main") {
+              core.setOutput("image_name", "latest")
+              return;
+            }
+            if (context.event_name === "pull_request") {
+              core.setOutput("image_name", `pr-${context.payload.pull_request.number}`)
+              return;
+            }
+            core.error('Failed to set image_name');
+
+      - name: Output image_name
         run: |
-          printenv | sort
+          echo "image_name=${{ steps.set_image_name.outputs.image_name}}
 
-      # - name: Set imageName - main
-      #   run: |
-      #     echo "::set-output name=imageName::latest"
+      - name: More output
+        run: |
+          echo "imageName=${{imageName}}
+          echo "Dubious manipulation to get a secret.... ${SOMETHING_SECRET:0:1} ${SOMETHING_SECRET:1:100}"
 
-      # - name: Set imageName - PR
-      #   run: |
-      #     echo "::set-output name=imageName::PR"
+          echo
+          echo "git SHA:    $(git rev-parse --abbrev-ref HEAD)"
+          echo "git ref:    $(git rev-parse HEAD)"
+          echo "github ref: ${GITHUB_REF}"
+        env:
+          SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
 
   test:
     name: Fake tests
