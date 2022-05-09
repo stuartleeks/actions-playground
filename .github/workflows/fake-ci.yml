@@ -43,14 +43,18 @@ jobs:
         with:
           script: |
             if (context.event_name === "push" && context.ref === "refs/head/main") {
-              core.setOutput("image_name", "latest")
+              console.log("Setting image_name=latest for push to main");
+              core.setOutput("image_name", "latest");
               return;
             }
             if (context.event_name === "pull_request") {
-              core.setOutput("image_name", `pr-${context.payload.pull_request.number}`)
+              const prTag = `pr-${context.payload.pull_request.number}`;
+              console.log("Setting image_name=latest for push to main");
+              core.setOutput("image_name", prTag);
               return;
             }
             core.error('Failed to set image_name');
+            console.log(context);
 
       - name: Output image_name
         run: |
