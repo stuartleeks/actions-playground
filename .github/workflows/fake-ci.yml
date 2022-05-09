@@ -54,7 +54,7 @@ jobs:
 
       - name: Output image_name
         run: |
-          echo "image_name=${{ steps.set_image_name.outputs.image_name}}
+          echo "image_name=${{ steps.set_image_name.outputs.image_name}}"
 
       - name: More output
         run: |
