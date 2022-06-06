@@ -1,4 +1,4 @@
-name: pr_comment_bot
+name: pr_closed
 
 on:
   pull_request:
