@@ -42,6 +42,8 @@ jobs:
             await script.getCommandFromComment({core, context, github});
             
       - name: Env
+        env:
+          PR_NUMBER: ${{ context.payload.pull_request.number }}
         run: printenv | sort
 
       - name: Check Command output
