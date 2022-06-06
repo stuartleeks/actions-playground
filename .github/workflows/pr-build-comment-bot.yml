@@ -47,6 +47,12 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: printenv | sort
 
+      - name: Context
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log(context);
+
       - name: Check Command output
         run: |
           echo "hi"
