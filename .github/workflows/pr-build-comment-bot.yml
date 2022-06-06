@@ -41,6 +41,8 @@ jobs:
             const script = require('./.github/workflows/build.js')
             await script.getCommandFromComment({core, context, github});
             
+      - name: Env
+        run: printenv | sort
 
       - name: Check Command output
         run: |
