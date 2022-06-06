@@ -1,0 +1,32 @@
+name: pr_comment_bot
+
+on:
+  pull_request:
+    types: [closed]
+
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#issue_comment
+# https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request
+
+
+jobs:
+
+  pr_closed:
+    name: PR Closed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Env
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printenv | sort
+
+      - name: Context
+        uses: actions/github-script@v6
+        with:
+          script: |
+            console.log(context);
