@@ -193,3 +193,24 @@ jobs:
           conclusion: "failure"
 
 
+
+
+  boolTest1:
+    name: "Test bool1"
+    runs-on: ubuntu-latest
+      if: ${{ inputs.boolTest1 }}
+    steps:
+      - name: "Dummy"
+        run: |
+          set -e
+          echo "simple step"
+
+  boolTest2:
+    name: "Test bool2"
+    runs-on: ubuntu-latest
+      if: ${{ inputs.boolTest2 }}
+    steps:
+      - name: "Dummy"
+        run: |
+          set -e
+          echo "simple step"
