@@ -220,6 +220,7 @@ jobs:
     name: "Test bool2"
     runs-on: ubuntu-latest
     if: ${{ inputs.test1 != '' }}
+    steps:
       - name: Test1
         run: |
           echo "Test1!"
