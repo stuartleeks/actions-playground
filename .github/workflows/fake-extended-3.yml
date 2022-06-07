@@ -198,7 +198,7 @@ jobs:
   boolTest1:
     name: "Test bool1"
     runs-on: ubuntu-latest
-    if: ${{ inputs.boolTest1 =='true' }}
+    if: ${{ inputs.boolTest1 == true }}
     steps:
       - name: "Dummy"
         run: |
@@ -208,7 +208,7 @@ jobs:
   boolTest2:
     name: "Test bool2"
     runs-on: ubuntu-latest
-    if: ${{ inputs.boolTest2 =='true' }}
+    if: ${{ inputs.boolTest2 == true }}
     steps:
       - name: "Dummy"
         run: |
@@ -219,7 +219,7 @@ jobs:
   stringTest1:
     name: "Test string1"
     runs-on: ubuntu-latest
-    if: ${{ inputs.test1 != '' }}
+    if: ${{ inputs.test1 == 'true' }}
     steps:
       - name: Test1
         run: |
