@@ -214,3 +214,12 @@ jobs:
         run: |
           set -e
           echo "simple step"
+
+
+  stringTest1:
+    name: "Test bool2"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.test1 != '' }}
+      - name: Test1
+        run: |
+          echo "Test1!"
