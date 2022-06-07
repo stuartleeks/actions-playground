@@ -22,6 +22,16 @@ on:
         description: testing params and conditions
         type: string
         required: false
+      boolTest1:
+        description: testing bools
+        type: boolean
+        default: false
+        required: false
+      boolTest2:
+        description: testing bools
+        type: boolean
+        default: false
+        required: false
     secrets:
       SOMETHING_SECRET:
         required: true
@@ -53,10 +63,31 @@ jobs:
         if: ${{ inputs.test1 != '' }}
         run: |
           echo "Test1!"
+
       - name: Test2
         if: ${{ inputs.test2 == '' }}
         run: |
           echo "Not Test2!"
+
+      - name: boolTest1a
+        if: ${{ inputs.boolTest1 }}
+        run: |
+          echo "boolTest1"
+
+      - name: boolTest1b
+        if: ${{ !inputs.boolTest1 }}
+        run: |
+          echo "Not boolTest1"
+
+      - name: boolTest2a
+        if: ${{ inputs.boolTest2 }}
+        run: |
+          echo "boolTest2"
+
+      - name: boolTest2b
+        if: ${{ !inputs.boolTest2 }}
+        run: |
+          echo "Not boolTest2"
 
       - name: Set values
         id: set_values
