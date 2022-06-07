@@ -70,22 +70,22 @@ jobs:
           echo "Not Test2!"
 
       - name: boolTest1a
-        if: ${{ inputs.boolTest1 }}
+        if: ${{ inputs.boolTest1  ==' true' }}
         run: |
           echo "boolTest1"
 
       - name: boolTest1b
-        if: ${{ !inputs.boolTest1 }}
+        if: ${{ inputs.boolTest1 !='true' }}
         run: |
           echo "Not boolTest1"
 
       - name: boolTest2a
-        if: ${{ inputs.boolTest2 }}
+        if: ${{ inputs.boolTest2 =='true' }}
         run: |
           echo "boolTest2"
 
       - name: boolTest2b
-        if: ${{ !inputs.boolTest2 }}
+        if: ${{ inputs.boolTest2 !='true' }}
         run: |
           echo "Not boolTest2"
 
@@ -198,7 +198,7 @@ jobs:
   boolTest1:
     name: "Test bool1"
     runs-on: ubuntu-latest
-    if: ${{ inputs.boolTest1 }}
+    if: ${{ inputs.boolTest1 =='true' }}
     steps:
       - name: "Dummy"
         run: |
@@ -208,7 +208,7 @@ jobs:
   boolTest2:
     name: "Test bool2"
     runs-on: ubuntu-latest
-    if: ${{ inputs.boolTest2 }}
+    if: ${{ inputs.boolTest2 =='true' }}
     steps:
       - name: "Dummy"
         run: |
