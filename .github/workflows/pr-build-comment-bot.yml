@@ -63,6 +63,11 @@ jobs:
           echo "result: ${{ steps.check_command.outputs.result }}"
           echo "command: ${{ steps.check_command.outputs.command }}"
 
+      - name: Check condition
+        if: ${{ steps.check_command.outputs.command == 'run-tests' && steps.check_command.outputs.nonDocsChanges == true}}
+        run: |
+          echo "hi - testing whether the output is a boolean!"
+
       - name: Check Command output
         if: ${{ steps.check_command.outputs.testOutput1 }}
         run: |
