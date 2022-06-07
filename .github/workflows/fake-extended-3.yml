@@ -217,7 +217,7 @@ jobs:
 
 
   stringTest1:
-    name: "Test bool2"
+    name: "Test string1"
     runs-on: ubuntu-latest
     if: ${{ inputs.test1 != '' }}
     steps:

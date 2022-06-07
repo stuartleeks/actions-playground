@@ -118,7 +118,7 @@ jobs:
     uses: ./.github/workflows/fake-extended-3.yml
     with:
       prRef: "refs/pull/${{ github.event.issue.number }}/merge"
-      test1: something
+      test1: true
       prHeadSha: ${{ needs.pr_commented.outputs.prHeadSha }}
       boolTest1: true
       boolTest2: false
