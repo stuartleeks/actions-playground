@@ -13,6 +13,7 @@ async function getCommandFromComment({ core, context, github }) {
     const repoOwner = repoParts[0];
     const repoName = repoParts[1];
     const prNumber = context.payload.issue.number;
+    const commentId = context.payload.comment.id;
     const commentLink = context.payload.comment.html_url;
     const runId = context.runId;
     const prAuthorUsername = context.payload.issue.user.login;
@@ -163,6 +164,12 @@ async function getCommandFromComment({ core, context, github }) {
         }
     }
     logAndSetOutput(core, "command", command);
+    github.rest.reactions.createForIssueComment({
+        owner: repoOwner,
+        repo: repoName,
+        comment_id: commentId,
+        content: '+1',
+    });
     return command;
 }
 
