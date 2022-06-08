@@ -62,7 +62,7 @@ jobs:
       - name: Test1
         if: ${{ inputs.test1 != '' }}
         run: |
-          echo "Test1!"
+          echo "test1: ${{ inputs.test1 }}"
 
       - name: Test2
         if: ${{ inputs.test2 == '' }}
