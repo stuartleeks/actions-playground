@@ -8,6 +8,11 @@ on:
         required: false
         default: DefaultTest1Value
         type: string
+      boolTest1:
+        description: value for boolTest1
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   run_test:

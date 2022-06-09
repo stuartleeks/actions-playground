@@ -92,7 +92,7 @@ jobs:
           echo "Not Test2!"
 
       - name: boolTest1a
-        if: ${{ inputs.boolTest1  ==' true' }}
+        if: ${{ inputs.boolTest1  == 'true' }}
         run: |
           echo "boolTest1"
 
