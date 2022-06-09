@@ -37,6 +37,12 @@ jobs:
         env:
           SOMETHING_SECRET: ${{ secrets.SOMETHING_SECRET }}
 
+      - name: Docker test
+        run: |
+          docker version
+          docker buildx version
+          docker buildx
+
       - id: set_image_name
         name: Set image_name...
         uses: actions/github-script@v6

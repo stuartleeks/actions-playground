@@ -32,13 +32,6 @@ jobs:
           script: |
             console.log(context);
 
-      - name: Docker test
-        run: |
-          docker version
-          docker buildx version
-          docker buildx
-
-
       - name: workdir
         run: |
           echo $PWD
