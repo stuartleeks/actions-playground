@@ -33,13 +33,14 @@ jobs:
           BOOLTEST2: ${{ inputs.boolTest2 }}
         with:
           script: |
-            console.log(github.event.inputs);
-            if (github.event.inputs.boolTest1) {
+            console.log(context);
+            console.log(context.inputs);
+            if (context.inputs.boolTest1) {
               console.log("boolTest1 - yay");
             } else {
               console.log("boolTest1 - nay");
             }
-            if (github.event.inputs.boolTest2) {
+            if (context.inputs.boolTest2) {
               console.log("boolTest2 - yay");
             } else {
               console.log("boolTest2 - nay");
