@@ -8,50 +8,16 @@ on:
         required: false
         default: DefaultTest1Value
         type: string
-      boolTest1:
-        description: value for boolTest1
-        required: false
-        default: true
-        type: boolean
-      boolTest2:
-        description: value for boolTest2
-        required: false
-        default: false
-        type: boolean
 
 jobs:
-
-  outputs:
-    name: Debug output
-    runs-on: ubuntu-latest
-    steps:
-      - name: inputs
-        uses: actions/github-script@v6
-        env:
-          TEST1: ${{ inputs.test1 }}
-          BOOLTEST1: ${{ inputs.boolTest1 }}
-          BOOLTEST2: ${{ inputs.boolTest2 }}
-        with:
-          script: |
-            console.log(context);
-            console.log(context.inputs);
-            if (context.inputs.boolTest1) {
-              console.log("boolTest1 - yay");
-            } else {
-              console.log("boolTest1 - nay");
-            }
-            if (context.inputs.boolTest2) {
-              console.log("boolTest2 - yay");
-            } else {
-              console.log("boolTest2 - nay");
-            }
-
   run_test:
     name: Run deploy via workflow_call
     uses: ./.github/workflows/fake-extended-3.yml
     with:
       # test1: ${{ github.event.inputs.test1 }}
       test1: ${{ github.ref }}
+      boolTest1: true
+      boolTest2: false
       # test1: ${{ needs.prep_run_test.outputs.anotherSecret }}
       # test1: ${{ secrets.ANOTHER_SECRET }}
       # prRef: ${{ needs.pr_commented.outputs.potentialMergeCommit }}

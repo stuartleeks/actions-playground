@@ -52,6 +52,30 @@ jobs:
           # repository: ${{ inputs.prRepo }}
           ref: ${{ inputs.prRef }}
 
+
+      - name: inputs
+        uses: actions/github-script@v6
+        env:
+          TEST1: ${{ inputs.test1 }}
+          BOOLTEST1: ${{ inputs.boolTest1 }}
+          BOOLTEST2: ${{ inputs.boolTest2 }}
+        with:
+          script: |
+            console.log(context);
+            console.log(context.inputs);
+            if (context.inputs.boolTest1) {
+              console.log("boolTest1 - yay");
+            } else {
+              console.log("boolTest1 - nay");
+            }
+            if (context.inputs.boolTest2) {
+              console.log("boolTest2 - yay");
+            } else {
+              console.log("boolTest2 - nay");
+            }
+
+
+
       - name: More output
         run: |
           echo
