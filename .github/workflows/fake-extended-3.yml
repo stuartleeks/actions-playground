@@ -61,8 +61,13 @@ jobs:
           BOOLTEST2: ${{ inputs.boolTest2 }}
         with:
           script: |
+            console.log(${{inputs.boolTest1}});
+            console.log("----")
+            console.log(process.env);
+            console.log("----")
             console.log(context);
-            console.log(context.inputs);
+            console.log("----")
+            console.log(context.payload.inputs);
             if (context.inputs.boolTest1) {
               console.log("boolTest1 - yay");
             } else {
