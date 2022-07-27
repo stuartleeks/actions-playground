@@ -1,0 +1,25 @@
+name: event-trigger-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Dump context
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            console.log(context);
+            console.log("==========================================================================================")
+            console.log(context.payload);
+            console.log("==========================================================================================")
