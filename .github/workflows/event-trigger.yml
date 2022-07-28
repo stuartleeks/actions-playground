@@ -23,3 +23,25 @@ jobs:
             console.log("==========================================================================================")
             console.log(context.payload);
             console.log("==========================================================================================")
+
+      - name: Create variable
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            if (context.event_name === "push") {
+              core.setOutput("selector_expression", "some value for push")
+            } else {
+              core.setOutput("selector_expression", "generic value")
+            }
+
+      - name: step A
+        if: false
+        run: |
+          echo Hello there!
+
+      - name: step B
+        if: |
+          false
+        run: |
+          echo Hello there!
