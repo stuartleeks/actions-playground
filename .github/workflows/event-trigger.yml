@@ -38,12 +38,12 @@ jobs:
             core.setOutput("test", false)
 
       - name: step A
-        if: ${{ steps.create_variables.outputs.test == 'false' }}
+        if: ${{ steps.create_variables.outputs.test == false }}
         run: |
           echo Hello there!
 
       - name: step B
         if: |
-          ${{ steps.create_variables.outputs.test == 'false' }}
+          ${{ steps.create_variables.outputs.test == false }}
         run: |
           echo Hello there!
