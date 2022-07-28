@@ -24,7 +24,8 @@ jobs:
             console.log(context.payload);
             console.log("==========================================================================================")
 
-      - name: Create variable
+      - name: Create variables
+        id: create_variables
         uses: actions/github-script@v6
         with:
           result-encoding: string
@@ -34,14 +35,15 @@ jobs:
             } else {
               core.setOutput("selector_expression", "generic value")
             }
+            core.setOutput("test", false)
 
       - name: step A
-        if: false
+        if: ${{ steps.create_variables.outputs.test == "false" }}
         run: |
           echo Hello there!
 
       - name: step B
         if: |
-          false
+          ${{ steps.create_variables.outputs.test == "false" }}
         run: |
           echo Hello there!
