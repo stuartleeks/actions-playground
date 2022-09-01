@@ -21,7 +21,7 @@ jobs:
 
       - name: Build dev container
         id: build
-        uses: ./
+        uses: devcontainers/ci
         with:
           subFolder: cache-test
           imageName: ghcr.io/stuartleeks/actions-playground/cache-test
@@ -46,7 +46,7 @@ jobs:
 
       - name: Run dev container
         id: run
-        uses: ./
+        uses: devcontainers/ci
         with:
           subFolder: cache-test
           imageName: ghcr.io/stuartleeks/actions-playground/cache-test
