@@ -25,7 +25,8 @@ jobs:
         with:
           subFolder: cache-test
           imageName: ghcr.io/stuartleeks/actions-playground/cache-test
-          imageTag: ${{ env.GITHUB_RUN_ID }}
+          imageTag: test1
+          # imageTag: ${{ env.GITHUB_RUN_ID }}
           runCmd: |
             build_date=$(cat ~/build-date)
             echo "build_date=$build_date"
@@ -51,7 +52,8 @@ jobs:
         with:
           subFolder: cache-test
           imageName: ghcr.io/stuartleeks/actions-playground/cache-test
-          imageTag: ${{ env.GITHUB_RUN_ID }}
+          imageTag: test1
+          # imageTag: ${{ env.GITHUB_RUN_ID }}
           runCmd: |
             build_date=$(cat ~/build-date)
             echo "build_date=$build_date"
