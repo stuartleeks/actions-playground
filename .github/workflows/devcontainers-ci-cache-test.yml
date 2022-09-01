@@ -1,0 +1,69 @@
+name: devcontainers-ci-cache-test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+     build_date: ${{ steps.build.build_date }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Build dev container
+        id: build
+        uses: ./
+        with:
+          subFolder: github-tests/Dockerfile/run-args
+          imageName: ghcr.io/stuartleeks/actions-playground/cache-test
+          imageTag: ${{ env.GITHUB_RUN_ID }}
+          runCmd: |
+            build_date=$(cat ~/build-date)
+            echo  "::set-output name=build_date::$build_date"
+          push: always
+
+  run:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run dev container
+        id: run
+        uses: ./
+        with:
+          subFolder: github-tests/Dockerfile/run-args
+          imageName: ghcr.io/stuartleeks/actions-playground/cache-test
+          imageTag: ${{ env.GITHUB_RUN_ID }}
+          runCmd: |
+            build_date=$(cat ~/build-date)
+            echo  "::set-output name=build_date::$build_date"
+          push: never
+
+      - name: Compare build_dates
+        run: |
+          build_date1="${{ needs.build.outputs.build_date }}"
+          build_date2="${{ steps.run.build_date }}"
+          
+          echo "build_date1=$build_date1"
+          echo "build_date2=$build_date2"
+          if [[ "$build_date1" != "$build_date2" ]]; then
+            echo "Dates don't match"
+            exit 1
+          fi
