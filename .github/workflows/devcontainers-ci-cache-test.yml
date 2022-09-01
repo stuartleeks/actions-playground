@@ -23,7 +23,7 @@ jobs:
         id: build
         uses: ./
         with:
-          subFolder: github-tests/Dockerfile/run-args
+          subFolder: cache-test
           imageName: ghcr.io/stuartleeks/actions-playground/cache-test
           imageTag: ${{ env.GITHUB_RUN_ID }}
           runCmd: |
@@ -48,7 +48,7 @@ jobs:
         id: run
         uses: ./
         with:
-          subFolder: github-tests/Dockerfile/run-args
+          subFolder: cache-test
           imageName: ghcr.io/stuartleeks/actions-playground/cache-test
           imageTag: ${{ env.GITHUB_RUN_ID }}
           runCmd: |
