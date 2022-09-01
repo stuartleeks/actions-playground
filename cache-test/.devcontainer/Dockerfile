@@ -15,4 +15,4 @@ FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:${VARIANT}
 
 USER node
 # Add a marker with the build date
-RUN date > /home/node/build-date
+RUN date > /home/node/build-date && cat /home/node/build-date
