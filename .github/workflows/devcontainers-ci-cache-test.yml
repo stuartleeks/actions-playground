@@ -28,7 +28,8 @@ jobs:
           imageTag: ${{ env.GITHUB_RUN_ID }}
           runCmd: |
             build_date=$(cat ~/build-date)
-            echo  "::set-output name=build_date::$build_date"
+            echo "build_date=$build_date"
+            echo "::set-output name=build_date::$build_date"
           push: always
 
   run:
@@ -53,7 +54,8 @@ jobs:
           imageTag: ${{ env.GITHUB_RUN_ID }}
           runCmd: |
             build_date=$(cat ~/build-date)
-            echo  "::set-output name=build_date::$build_date"
+            echo "build_date=$build_date"
+            echo "::set-output name=build_date::$build_date"
           push: never
 
       - name: Compare build_dates
