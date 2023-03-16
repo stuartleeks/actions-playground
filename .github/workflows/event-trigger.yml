@@ -47,3 +47,10 @@ jobs:
           ${{ steps.create_variables.outputs.test == false }}
         run: |
           echo Hello there!
+      
+      - name: env var test
+        env:
+          TEST_VAR:
+        run: |
+          printenv | sort
+          
