@@ -47,3 +47,11 @@ jobs:
       - name: npm install devcontainers/cli
         run: |
           npm install -g @devcontainers/cli@0
+
+      - name: which devcontaienr
+        run: |
+          which devcontainer
+
+      - name: ls /usr/bin
+        run: |
+          ls -al /usr/bin
