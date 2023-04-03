@@ -32,6 +32,10 @@ jobs:
         run: |
           ls -al /usr
 
+      - name: ls /usr/local
+        run: |
+          ls -al /usr/local
+
       - name: npm config list
         run: |
           npm config list
@@ -39,3 +43,7 @@ jobs:
       - name: npm config list -l
         run: |
           npm config list -l
+
+      - name: npm install devcontainers/cli
+        run: |
+          npm install -g @devcontainers/cli@0
