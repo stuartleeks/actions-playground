@@ -21,19 +21,21 @@ jobs:
             console.log("==========================================================================================")
 
       - name: env vars
-        env:
-          TEST_VAR:
         run: |
           printenv | sort
           
       - name: ls /usr/lib
-        env:
-          TEST_VAR:
         run: |
           ls -al /usr/lib
 
       - name: ls /usr
-        env:
-          TEST_VAR:
         run: |
           ls -al /usr
+
+      - name: npm config list
+        run: |
+          npm config list
+
+      - name: npm config list -l
+        run: |
+          npm config list -l
