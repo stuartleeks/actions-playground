@@ -52,6 +52,6 @@ jobs:
         run: |
           which devcontainer
 
-      - name: ls /usr/bin
+      - name: ls /usr/local/bin
         run: |
-          ls -al /usr/bin
+          ls -al /usr/local/bin
